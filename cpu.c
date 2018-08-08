@@ -23,7 +23,7 @@ void init_cpu() {
 
     fclose(fp);
 
-    pc = 3;
+    pc = 0;
 }
 
 Instr fetch_instr() {
@@ -36,6 +36,7 @@ Instr fetch_instr() {
     instr.opcode = opcode;
     strcpy(instr.mnenomic, "DEF");
     instr.cycles = 100;
+    instr.byte_count = 1;
 
     // Handle misc opcodes
     if ((opcode & 0xf) == 0x0 ||
@@ -49,7 +50,16 @@ Instr fetch_instr() {
             instr.opcode = opcode;
             strcpy(instr.mnenomic, "NOP");
             instr.cycles = 4;
+            instr.byte_count = 1;
         }
+    }
+
+    // temporarily increment pc here
+    pc += instr.byte_count;
+
+    // temporarily exit when pc reaches end of ROM
+    if (pc >= 0x1fff) {
+        exit(0);
     }
 
     return instr;

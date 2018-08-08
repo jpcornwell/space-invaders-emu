@@ -16,6 +16,7 @@ typedef struct Instr {
     uint8_t opcode;
     char mnenomic[4];
     int cycles;
+    int byte_count;
 } Instr;
 
 void init_cpu(void);

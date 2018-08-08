@@ -8,6 +8,8 @@ int main(int argc, char *argv[]) {
 
     init_cpu();
 
-    instr = fetch_instr();
-    printf("Opcode: 0x%x\n", instr.opcode);
+    while (1) {
+        instr = fetch_instr();
+        printf("Opcode: 0x%x\n", instr.opcode);
+    }
 }
