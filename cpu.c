@@ -1,6 +1,8 @@
 
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "cpu.h"
 
@@ -10,7 +12,18 @@ uint16_t pc;
 uint8_t memory[65536];
 
 void init_cpu() {
-    memory[0] = 0x38;
+    FILE *fp = fopen("invaders.rom", "rb");
+    
+    if (fp == NULL) {
+        printf("Error opening ROM file\n");
+        exit(1);
+    }
+
+    fread(memory, 1, 65536, fp);
+
+    fclose(fp);
+
+    pc = 3;
 }
 
 Instr fetch_instr() {
