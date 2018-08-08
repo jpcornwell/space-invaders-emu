@@ -13,6 +13,7 @@ typedef enum InstrType {
 
 typedef struct Instr {
     InstrType type;
+    uint16_t address;
     uint8_t opcode;
     char mnenomic[4];
     int cycles;

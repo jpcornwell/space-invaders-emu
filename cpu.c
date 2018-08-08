@@ -38,6 +38,8 @@ Instr fetch_instr() {
     instr.cycles = 100;
     instr.byte_count = 1;
 
+    instr.address = pc;
+
     // Handle misc opcodes
     if ((opcode & 0xf) == 0x0 ||
         (opcode & 0xf) == 0x8) {
