@@ -2,6 +2,8 @@
 #ifndef CPU_H
 #define CPU_H
 
+#include <stdint.h>
+
 typedef enum InstrType {
     INSTR_MISC,
     INSTR_JUMP,
@@ -11,10 +13,12 @@ typedef enum InstrType {
 
 typedef struct Instr {
     InstrType type;
-    char opcode[4];
+    uint8_t opcode;
+    char mnenomic[4];
     int cycles;
 } Instr;
 
+void init_cpu(void);
 Instr fetch_instr(void);
 
 #endif
