@@ -10,6 +10,6 @@ int main(int argc, char *argv[]) {
 
     while (1) {
         instr = fetch_instr();
-        printf("Opcode: 0x%x\n", instr.opcode);
+        printf("%x: %s (0x%02x)\n", instr.address, instr.mnenomic, instr.opcode);
     }
 }

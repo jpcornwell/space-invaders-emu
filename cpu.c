@@ -61,6 +61,7 @@ Instr fetch_instr() {
 
     // temporarily exit when pc reaches end of ROM
     if (pc >= 0x1fff) {
+        printf("Complete: have reached the end of ROM\n");
         exit(0);
     }
 
