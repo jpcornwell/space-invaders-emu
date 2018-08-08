@@ -32,13 +32,13 @@ Instr fetch_instr() {
     uint8_t opcode = memory[pc];
 
     // temporarily fill out some default values
-    instr.type = INSTR_JUMP;
-    instr.opcode = opcode;
-    strcpy(instr.mnenomic, "DEF");
-    instr.cycles = 100;
-    instr.byte_count = 1;
+    instr.type = INSTR_MISC;
+    strcpy(instr.mnenomic, "999");
+    instr.cycles = 999;
+    instr.byte_count = 999;
 
     instr.address = pc;
+    instr.opcode = opcode;
 
     // Handle misc opcodes
     if ((opcode & 0xf) == 0x0 ||
@@ -49,11 +49,15 @@ Instr fetch_instr() {
             (opcode & 0xf0) == 0x30) {
 
             instr.type = INSTR_MISC;
-            instr.opcode = opcode;
             strcpy(instr.mnenomic, "NOP");
             instr.cycles = 4;
             instr.byte_count = 1;
         }
+    }
+
+    if (instr.cycles == 999) {
+        printf("Error: Unrecognized opcode: 0x%02x\n", instr.opcode);
+        exit(1);
     }
 
     // temporarily increment pc here
