@@ -74,6 +74,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_B_AND_OP_16);
             break;
         case 0x02:
+            instr = populate_instr(INSTR_STORE_ACCUMULATOR, "STAX", 7, 1,
+                                   INSTR_OP_REG_PAIR_B);
             break;
         case 0x03:
             instr = populate_instr(INSTR_INCREMENT_REG_PAIR, "INX", 5, 1,
@@ -84,6 +86,8 @@ Instr fetch_instr() {
         case 0x05:
             break;
         case 0x06:
+            instr = populate_instr(INSTR_MOVE_IMMEDIATE, "MVI", 7, 2,
+                                   INSTR_OP_REG_B_AND_OP_8);
             break;
         case 0x07:
             break;
@@ -95,6 +99,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_B);
             break;
         case 0x0a:
+            instr = populate_instr(INSTR_LOAD_ACCUMULATOR, "LDAX", 7, 1,
+                                   INSTR_OP_REG_PAIR_B);
             break;
         case 0x0b:
             instr = populate_instr(INSTR_DECREMENT_REG_PAIR, "DCX", 5, 1,
@@ -105,6 +111,8 @@ Instr fetch_instr() {
         case 0x0d:
             break;
         case 0x0e:
+            instr = populate_instr(INSTR_MOVE_IMMEDIATE, "MVI", 7, 2,
+                                   INSTR_OP_REG_C_AND_OP_8);
             break;
         case 0x0f:
             break;
@@ -116,6 +124,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_D_AND_OP_16);
             break;
         case 0x12:
+            instr = populate_instr(INSTR_STORE_ACCUMULATOR, "STAX", 7, 1,
+                                   INSTR_OP_REG_PAIR_D);
             break;
         case 0x13:
             instr = populate_instr(INSTR_INCREMENT_REG_PAIR, "INX", 5, 1,
@@ -126,6 +136,8 @@ Instr fetch_instr() {
         case 0x15:
             break;
         case 0x16:
+            instr = populate_instr(INSTR_MOVE_IMMEDIATE, "MVI", 7, 2,
+                                   INSTR_OP_REG_D_AND_OP_8);
             break;
         case 0x17:
             break;
@@ -137,6 +149,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_D);
             break;
         case 0x1a:
+            instr = populate_instr(INSTR_LOAD_ACCUMULATOR, "LDAX", 7, 1,
+                                   INSTR_OP_REG_PAIR_D);
             break;
         case 0x1b:
             instr = populate_instr(INSTR_DECREMENT_REG_PAIR, "DCX", 5, 1,
@@ -147,6 +161,8 @@ Instr fetch_instr() {
         case 0x1d:
             break;
         case 0x1e:
+            instr = populate_instr(INSTR_MOVE_IMMEDIATE, "MVI", 7, 2,
+                                   INSTR_OP_REG_E_AND_OP_8);
             break;
         case 0x1f:
             break;
@@ -170,6 +186,8 @@ Instr fetch_instr() {
         case 0x25:
             break;
         case 0x26:
+            instr = populate_instr(INSTR_MOVE_IMMEDIATE, "MVI", 7, 2,
+                                   INSTR_OP_REG_H_AND_OP_8);
             break;
         case 0x27:
             break;
@@ -193,6 +211,8 @@ Instr fetch_instr() {
         case 0x2d:
             break;
         case 0x2e:
+            instr = populate_instr(INSTR_MOVE_IMMEDIATE, "MVI", 7, 2,
+                                   INSTR_OP_REG_L_AND_OP_8);
             break;
         case 0x2f:
             break;
@@ -204,6 +224,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_SP_AND_OP_16);
             break;
         case 0x32:
+            instr = populate_instr(INSTR_STORE_ACCUMULATOR_DIRECT, "STA", 13,
+                                   3, INSTR_OP_16);
             break;
         case 0x33:
             instr = populate_instr(INSTR_INCREMENT_REG_PAIR, "INX", 5, 1,
@@ -214,6 +236,8 @@ Instr fetch_instr() {
         case 0x35:
             break;
         case 0x36:
+            instr = populate_instr(INSTR_MOVE_IMMEDIATE, "MVI", 10, 2,
+                                   INSTR_OP_MEM_REF_AND_OP_8);
             break;
         case 0x37:
             break;
@@ -225,6 +249,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_SP);
             break;
         case 0x3a:
+            instr = populate_instr(INSTR_LOAD_ACCUMULATOR_DIRECT, "LDA", 13,
+                                   3, INSTR_OP_16);
             break;
         case 0x3b:
             instr = populate_instr(INSTR_DECREMENT_REG_PAIR, "DCX", 5, 1,
@@ -235,6 +261,8 @@ Instr fetch_instr() {
         case 0x3d:
             break;
         case 0x3e:
+            instr = populate_instr(INSTR_MOVE_IMMEDIATE, "MVI", 7, 2,
+                                   INSTR_OP_REG_A_AND_OP_8);
             break;
         case 0x3f:
             break;
