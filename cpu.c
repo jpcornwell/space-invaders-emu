@@ -27,7 +27,7 @@ void init_cpu() {
 }
 
 Instr populate_instr(InstrType type, char *mnenomic, int cycle_count,
-        int byte_count) {
+        int byte_count, InstrOpType op_type) {
     Instr instr;
 
     instr.address = pc;
@@ -36,6 +36,18 @@ Instr populate_instr(InstrType type, char *mnenomic, int cycle_count,
     strcpy(instr.mnenomic, mnenomic);
     instr.cycle_count = cycle_count;
     instr.byte_count = byte_count;
+
+    instr.op_type = op_type;
+    if (op_type == INSTR_OP_SINGLE_8) {
+        instr.operand_8_1 = memory[pc+1];
+    }
+    if (op_type == INSTR_OP_DOUBLE_8) {
+        instr.operand_8_1 = memory[pc+1];
+        instr.operand_8_2 = memory[pc+2];
+    }
+    if (op_type == INSTR_OP_16) {
+        instr.operand_16 = (memory[pc+1] << 8) + memory[pc+2];
+    }
 
     return instr;
 }
@@ -59,12 +71,30 @@ Instr fetch_instr() {
     if (opcode_lo == 0x0 ||
         opcode_lo == 0x8) {
         if (opcode_hi <= 0x3) {
-            instr = populate_instr(INSTR_MISC, "NOP", 4, 1);
+            instr = populate_instr(INSTR_MISC, "NOP", 4, 1, INSTR_OP_NONE);
         }
     }
 
     if (opcode == 0x76) {
-        instr = populate_instr(INSTR_MISC, "HLT", 7, 1);
+        instr = populate_instr(INSTR_MISC, "HLT", 7, 1, INSTR_OP_NONE);
+    }
+
+    if (opcode == 0xf3) {
+        instr = populate_instr(INSTR_MISC, "DI", 4, 1, INSTR_OP_NONE);
+    }
+
+    if (opcode == 0xf8) {
+        instr = populate_instr(INSTR_MISC, "EI", 4, 1, INSTR_OP_NONE);
+    }
+
+    if (opcode == 0xd3) {
+        instr = populate_instr(INSTR_MISC, "OUT", 10, 2, INSTR_OP_SINGLE_8);
+        instr.operand_8_1 = memory[pc+1];
+    }
+
+    if (opcode == 0xd8) {
+        instr = populate_instr(INSTR_MISC, "IN", 10, 2, INSTR_OP_SINGLE_8);
+        instr.operand_8_1 = memory[pc+1];
     }
 
     if (instr.cycle_count == 999) {
