@@ -89,12 +89,10 @@ Instr fetch_instr() {
 
     if (opcode == 0xd3) {
         instr = populate_instr(INSTR_MISC, "OUT", 10, 2, INSTR_OP_SINGLE_8);
-        instr.operand_8_1 = memory[pc+1];
     }
 
     if (opcode == 0xd8) {
         instr = populate_instr(INSTR_MISC, "IN", 10, 2, INSTR_OP_SINGLE_8);
-        instr.operand_8_1 = memory[pc+1];
     }
 
     if (instr.cycle_count == 999) {
