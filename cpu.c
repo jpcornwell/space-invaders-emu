@@ -49,6 +49,65 @@ Instr populate_instr(InstrType type, char *mnenomic, int cycle_count,
         instr.operand_16 = (memory[pc+1] << 8) + memory[pc+2];
     }
 
+    if (instr.type == INSTR_MOVE) {
+        int op_src = instr.opcode & 0x7;
+        int op_dest = (instr.opcode >> 3) & 0x7;
+
+        switch (op_src) {
+            case 0:
+                instr.move_source = MOV_LOC_B;
+                break;
+            case 1:
+                instr.move_source = MOV_LOC_C;
+                break;
+            case 2:
+                instr.move_source = MOV_LOC_D;
+                break;
+            case 3:
+                instr.move_source = MOV_LOC_E;
+                break;
+            case 4:
+                instr.move_source = MOV_LOC_H;
+                break;
+            case 5:
+                instr.move_source = MOV_LOC_L;
+                break;
+            case 6:
+                instr.move_source = MOV_LOC_MEM_REF;
+                break;
+            case 7:
+                instr.move_source = MOV_LOC_A;
+                break;
+        }
+
+        switch (op_dest) {
+            case 0:
+                instr.move_destination = MOV_LOC_B;
+                break;
+            case 1:
+                instr.move_destination = MOV_LOC_C;
+                break;
+            case 2:
+                instr.move_destination = MOV_LOC_D;
+                break;
+            case 3:
+                instr.move_destination = MOV_LOC_E;
+                break;
+            case 4:
+                instr.move_destination = MOV_LOC_H;
+                break;
+            case 5:
+                instr.move_destination = MOV_LOC_L;
+                break;
+            case 6:
+                instr.move_destination = MOV_LOC_MEM_REF;
+                break;
+            case 7:
+                instr.move_destination = MOV_LOC_A;
+                break;
+        }
+    }
+
     return instr;
 }
 
@@ -267,133 +326,196 @@ Instr fetch_instr() {
         case 0x3f:
             break;
         case 0x40:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x41:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x42:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x43:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x44:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x45:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x46:
+            instr = populate_instr(INSTR_MOVE, "MOV", 7, 1, INSTR_OP_NONE);
             break;
         case 0x47:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x48:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x49:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x4a:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x4b:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x4c:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x4d:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x4e:
+            instr = populate_instr(INSTR_MOVE, "MOV", 7, 1, INSTR_OP_NONE);
             break;
         case 0x4f:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x50:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x51:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x52:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x53:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x54:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x55:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x56:
+            instr = populate_instr(INSTR_MOVE, "MOV", 7, 1, INSTR_OP_NONE);
             break;
         case 0x57:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x58:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x59:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x5a:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x5b:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x5c:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x5d:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x5e:
+            instr = populate_instr(INSTR_MOVE, "MOV", 7, 1, INSTR_OP_NONE);
             break;
         case 0x5f:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x60:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x61:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x62:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x63:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x64:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x65:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x66:
+            instr = populate_instr(INSTR_MOVE, "MOV", 7, 1, INSTR_OP_NONE);
             break;
         case 0x67:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x68:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x69:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x6a:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x6b:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x6c:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x6d:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x6e:
+            instr = populate_instr(INSTR_MOVE, "MOV", 7, 1, INSTR_OP_NONE);
             break;
         case 0x6f:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x70:
+            instr = populate_instr(INSTR_MOVE, "MOV", 7, 1, INSTR_OP_NONE);
             break;
         case 0x71:
+            instr = populate_instr(INSTR_MOVE, "MOV", 7, 1, INSTR_OP_NONE);
             break;
         case 0x72:
+            instr = populate_instr(INSTR_MOVE, "MOV", 7, 1, INSTR_OP_NONE);
             break;
         case 0x73:
+            instr = populate_instr(INSTR_MOVE, "MOV", 7, 1, INSTR_OP_NONE);
             break;
         case 0x74:
+            instr = populate_instr(INSTR_MOVE, "MOV", 7, 1, INSTR_OP_NONE);
             break;
         case 0x75:
+            instr = populate_instr(INSTR_MOVE, "MOV", 7, 1, INSTR_OP_NONE);
             break;
         case 0x76:
             instr = populate_instr(INSTR_HALT, "HLT", 7, 1, INSTR_OP_NONE);
             break;
         case 0x77:
+            instr = populate_instr(INSTR_MOVE, "MOV", 7, 1, INSTR_OP_NONE);
             break;
         case 0x78:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x79:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x7a:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x7b:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x7c:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x7d:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x7e:
+            instr = populate_instr(INSTR_MOVE, "MOV", 7, 1, INSTR_OP_NONE);
             break;
         case 0x7f:
+            instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x80:
             break;

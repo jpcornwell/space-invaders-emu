@@ -4,6 +4,17 @@
 
 #include <stdint.h>
 
+typedef enum MoveLocation {
+    MOV_LOC_B,
+    MOV_LOC_C,
+    MOV_LOC_D,
+    MOV_LOC_E,
+    MOV_LOC_H,
+    MOV_LOC_L,
+    MOV_LOC_MEM_REF,
+    MOV_LOC_A
+} MoveLocation;
+
 typedef enum InstrType {
     INSTR_NOP,
     INSTR_HALT,
@@ -65,6 +76,8 @@ typedef struct Instr {
     uint8_t operand_8_1;
     uint8_t operand_8_2;
     uint16_t operand_16;
+    MoveLocation move_source;
+    MoveLocation move_destination;
 } Instr;
 
 void init_cpu(void);
