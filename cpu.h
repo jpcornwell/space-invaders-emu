@@ -10,14 +10,21 @@ typedef enum InstrType {
     INSTR_DISABLE_INTERRUPT,
     INSTR_ENABLE_INTERRUPT,
     INSTR_OUTPUT,
-    INSTR_INPUT
+    INSTR_INPUT,
+    INSTR_DOUBLE_ADD,
+    INSTR_INCREMENT_REG_PAIR,
+    INSTR_DECREMENT_REG_PAIR
 } InstrType;
 
 typedef enum InstrOpType {
     INSTR_OP_NONE,
     INSTR_OP_SINGLE_8,
     INSTR_OP_DOUBLE_8,
-    INSTR_OP_16
+    INSTR_OP_16,
+    INSTR_OP_REG_PAIR_B,
+    INSTR_OP_REG_PAIR_D,
+    INSTR_OP_REG_PAIR_H,
+    INSTR_OP_REG_PAIR_SP
 } InstrOpType;
 
 typedef struct Instr {
