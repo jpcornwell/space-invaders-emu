@@ -16,7 +16,7 @@ typedef struct Instr {
     uint16_t address;
     uint8_t opcode;
     char mnenomic[4];
-    int cycles;
+    int cycle_count;
     int byte_count;
 } Instr;
 
