@@ -44,6 +44,8 @@ Instr fetch_instr() {
     Instr instr;
 
     uint8_t opcode = memory[pc];
+    uint8_t opcode_hi = opcode >> 4;  // high 4 bits
+    uint8_t opcode_lo = opcode & 0xf; //  low 4 bits
 
     // temporarily fill out some default values
     instr.type = INSTR_MISC;
@@ -54,13 +56,9 @@ Instr fetch_instr() {
     instr.opcode = opcode;
 
     // Handle misc opcodes
-    if ((opcode & 0xf) == 0x0 ||
-        (opcode & 0xf) == 0x8) {
-        if ((opcode & 0xf0) == 0x00 ||
-            (opcode & 0xf0) == 0x10 ||
-            (opcode & 0xf0) == 0x20 ||
-            (opcode & 0xf0) == 0x30) {
-
+    if (opcode_lo == 0x0 ||
+        opcode_lo == 0x8) {
+        if (opcode_hi <= 0x3) {
             instr = populate_instr(INSTR_MISC, "NOP", 4, 1);
         }
     }
