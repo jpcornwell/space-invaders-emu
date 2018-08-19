@@ -60,39 +60,40 @@ Instr fetch_instr() {
     uint8_t opcode_lo = opcode & 0xf; //  low 4 bits
 
     // temporarily fill out some default values
-    instr.type = INSTR_MISC;
+    instr.type = INSTR_NOP;
     strcpy(instr.mnenomic, "999");
     instr.cycle_count = 999;
     instr.byte_count = 999;
     instr.address = pc;
     instr.opcode = opcode;
 
-    // Handle misc opcodes
     if (opcode_lo == 0x0 ||
         opcode_lo == 0x8) {
         if (opcode_hi <= 0x3) {
-            instr = populate_instr(INSTR_MISC, "NOP", 4, 1, INSTR_OP_NONE);
+            instr = populate_instr(INSTR_NOP, "NOP", 4, 1, INSTR_OP_NONE);
         }
     }
 
     if (opcode == 0x76) {
-        instr = populate_instr(INSTR_MISC, "HLT", 7, 1, INSTR_OP_NONE);
+        instr = populate_instr(INSTR_HALT, "HLT", 7, 1, INSTR_OP_NONE);
     }
 
     if (opcode == 0xf3) {
-        instr = populate_instr(INSTR_MISC, "DI", 4, 1, INSTR_OP_NONE);
+        instr = populate_instr(INSTR_DISABLE_INTERRUPT, "DI", 4, 1,
+                INSTR_OP_NONE);
     }
 
     if (opcode == 0xf8) {
-        instr = populate_instr(INSTR_MISC, "EI", 4, 1, INSTR_OP_NONE);
+        instr = populate_instr(INSTR_ENABLE_INTERRUPT, "EI", 4, 1,
+                INSTR_OP_NONE);
     }
 
     if (opcode == 0xd3) {
-        instr = populate_instr(INSTR_MISC, "OUT", 10, 2, INSTR_OP_SINGLE_8);
+        instr = populate_instr(INSTR_OUTPUT, "OUT", 10, 2, INSTR_OP_SINGLE_8);
     }
 
     if (opcode == 0xd8) {
-        instr = populate_instr(INSTR_MISC, "IN", 10, 2, INSTR_OP_SINGLE_8);
+        instr = populate_instr(INSTR_INPUT, "IN", 10, 2, INSTR_OP_SINGLE_8);
     }
 
     if (instr.cycle_count == 999) {
