@@ -38,7 +38,9 @@ typedef enum InstrType {
     INSTR_STORE_ACCUMULATOR_DIRECT,
     INSTR_LOAD_ACCUMULATOR_DIRECT,
     INSTR_MOVE_IMMEDIATE,
-    INSTR_MOVE
+    INSTR_MOVE,
+    INSTR_INCREMENT_REG,
+    INSTR_DECREMENT_REG
 } InstrType;
 
 typedef enum InstrOpType {
@@ -55,6 +57,14 @@ typedef enum InstrOpType {
     INSTR_OP_REG_PAIR_D_AND_OP_16,
     INSTR_OP_REG_PAIR_H_AND_OP_16,
     INSTR_OP_REG_PAIR_SP_AND_OP_16,
+    INSTR_OP_REG_B,
+    INSTR_OP_REG_C,
+    INSTR_OP_REG_D,
+    INSTR_OP_REG_E,
+    INSTR_OP_REG_H,
+    INSTR_OP_REG_L,
+    INSTR_OP_REG_A,
+    INSTR_OP_MEM_REF,
     INSTR_OP_REG_B_AND_OP_8,
     INSTR_OP_REG_C_AND_OP_8,
     INSTR_OP_REG_D_AND_OP_8,
@@ -62,7 +72,7 @@ typedef enum InstrOpType {
     INSTR_OP_REG_H_AND_OP_8,
     INSTR_OP_REG_L_AND_OP_8,
     INSTR_OP_REG_A_AND_OP_8,
-    INSTR_OP_MEM_REF_AND_OP_8,
+    INSTR_OP_MEM_REF_AND_OP_8
 } InstrOpType;
 
 typedef struct Instr {

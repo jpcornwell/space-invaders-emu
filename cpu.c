@@ -141,8 +141,12 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_B);
             break;
         case 0x04:
+            instr = populate_instr(INSTR_INCREMENT_REG, "INR", 5, 1,
+                                   INSTR_OP_REG_B);
             break;
         case 0x05:
+            instr = populate_instr(INSTR_DECREMENT_REG, "DCR", 5, 1,
+                                   INSTR_OP_REG_B);
             break;
         case 0x06:
             instr = populate_instr(INSTR_MOVE_IMMEDIATE, "MVI", 7, 2,
@@ -166,8 +170,12 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_B);
             break;
         case 0x0c:
+            instr = populate_instr(INSTR_INCREMENT_REG, "INR", 5, 1,
+                                   INSTR_OP_REG_C);
             break;
         case 0x0d:
+            instr = populate_instr(INSTR_DECREMENT_REG, "DCR", 5, 1,
+                                   INSTR_OP_REG_C);
             break;
         case 0x0e:
             instr = populate_instr(INSTR_MOVE_IMMEDIATE, "MVI", 7, 2,
@@ -191,8 +199,12 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_D);
             break;
         case 0x14:
+            instr = populate_instr(INSTR_INCREMENT_REG, "INR", 5, 1,
+                                   INSTR_OP_REG_D);
             break;
         case 0x15:
+            instr = populate_instr(INSTR_DECREMENT_REG, "DCR", 5, 1,
+                                   INSTR_OP_REG_D);
             break;
         case 0x16:
             instr = populate_instr(INSTR_MOVE_IMMEDIATE, "MVI", 7, 2,
@@ -216,8 +228,12 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_D);
             break;
         case 0x1c:
+            instr = populate_instr(INSTR_INCREMENT_REG, "INR", 5, 1,
+                                   INSTR_OP_REG_E);
             break;
         case 0x1d:
+            instr = populate_instr(INSTR_DECREMENT_REG, "DCR", 5, 1,
+                                   INSTR_OP_REG_E);
             break;
         case 0x1e:
             instr = populate_instr(INSTR_MOVE_IMMEDIATE, "MVI", 7, 2,
@@ -241,8 +257,12 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_H);
             break;
         case 0x24:
+            instr = populate_instr(INSTR_INCREMENT_REG, "INR", 5, 1,
+                                   INSTR_OP_REG_H);
             break;
         case 0x25:
+            instr = populate_instr(INSTR_DECREMENT_REG, "DCR", 5, 1,
+                                   INSTR_OP_REG_H);
             break;
         case 0x26:
             instr = populate_instr(INSTR_MOVE_IMMEDIATE, "MVI", 7, 2,
@@ -266,8 +286,12 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_H);
             break;
         case 0x2c:
+            instr = populate_instr(INSTR_INCREMENT_REG, "INR", 5, 1,
+                                   INSTR_OP_REG_L);
             break;
         case 0x2d:
+            instr = populate_instr(INSTR_DECREMENT_REG, "DCR", 5, 1,
+                                   INSTR_OP_REG_L);
             break;
         case 0x2e:
             instr = populate_instr(INSTR_MOVE_IMMEDIATE, "MVI", 7, 2,
@@ -291,8 +315,12 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_SP);
             break;
         case 0x34:
+            instr = populate_instr(INSTR_INCREMENT_REG, "INR", 10, 1,
+                                   INSTR_OP_MEM_REF);
             break;
         case 0x35:
+            instr = populate_instr(INSTR_DECREMENT_REG, "DCR", 10, 1,
+                                   INSTR_OP_MEM_REF);
             break;
         case 0x36:
             instr = populate_instr(INSTR_MOVE_IMMEDIATE, "MVI", 10, 2,
@@ -316,8 +344,12 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_SP);
             break;
         case 0x3c:
+            instr = populate_instr(INSTR_INCREMENT_REG, "INR", 5, 1,
+                                   INSTR_OP_REG_A);
             break;
         case 0x3d:
+            instr = populate_instr(INSTR_DECREMENT_REG, "DCR", 5, 1,
+                                   INSTR_OP_REG_A);
             break;
         case 0x3e:
             instr = populate_instr(INSTR_MOVE_IMMEDIATE, "MVI", 7, 2,
