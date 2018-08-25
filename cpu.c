@@ -153,6 +153,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_B_AND_OP_8);
             break;
         case 0x07:
+            instr = populate_instr(INSTR_ROTATE_ACCUMULATOR_LEFT_CARRY, "RLC",
+                                   4, 1, INSTR_OP_NONE);
             break;
         case 0x08:
             instr = populate_instr(INSTR_NOP, "NOP", 4, 1, INSTR_OP_NONE);
@@ -182,6 +184,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_C_AND_OP_8);
             break;
         case 0x0f:
+            instr = populate_instr(INSTR_ROTATE_ACCUMULATOR_RIGHT_CARRY, "RRC",
+                                   4, 1, INSTR_OP_NONE);
             break;
         case 0x10:
             instr = populate_instr(INSTR_NOP, "NOP", 4, 1, INSTR_OP_NONE);
@@ -211,6 +215,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_D_AND_OP_8);
             break;
         case 0x17:
+            instr = populate_instr(INSTR_ROTATE_ACCUMULATOR_LEFT, "RAL",
+                                   4, 1, INSTR_OP_NONE);
             break;
         case 0x18:
             instr = populate_instr(INSTR_NOP, "NOP", 4, 1, INSTR_OP_NONE);
@@ -240,6 +246,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_E_AND_OP_8);
             break;
         case 0x1f:
+            instr = populate_instr(INSTR_ROTATE_ACCUMULATOR_RIGHT, "RAR",
+                                   4, 1, INSTR_OP_NONE);
             break;
         case 0x20:
             instr = populate_instr(INSTR_NOP, "NOP", 4, 1, INSTR_OP_NONE);
@@ -269,6 +277,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_H_AND_OP_8);
             break;
         case 0x27:
+            instr = populate_instr(INSTR_DECIMAL_ADJUST_ACCUMULATOR, "DAA",
+                                   4, 1, INSTR_OP_NONE);
             break;
         case 0x28:
             instr = populate_instr(INSTR_NOP, "NOP", 4, 1, INSTR_OP_NONE);
@@ -298,6 +308,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_L_AND_OP_8);
             break;
         case 0x2f:
+            instr = populate_instr(INSTR_COMPLEMENT_ACCUMULATOR, "CMA", 4, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0x30:
             instr = populate_instr(INSTR_NOP, "NOP", 4, 1, INSTR_OP_NONE);
@@ -327,6 +339,8 @@ Instr fetch_instr() {
                                    INSTR_OP_MEM_REF_AND_OP_8);
             break;
         case 0x37:
+            instr = populate_instr(INSTR_SET_CARRY, "STC", 4, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0x38:
             instr = populate_instr(INSTR_NOP, "NOP", 4, 1, INSTR_OP_NONE);
@@ -356,6 +370,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_A_AND_OP_8);
             break;
         case 0x3f:
+            instr = populate_instr(INSTR_COMPLEMENT_CARRY, "CMC", 4, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0x40:
             instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
