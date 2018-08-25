@@ -694,16 +694,23 @@ Instr fetch_instr() {
         case 0xbf:
             break;
         case 0xc0:
+            instr = populate_instr(INSTR_RETURN_IF_NOT_ZERO, "RNZ", 5, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0xc1:
             instr = populate_instr(INSTR_POP, "POP", 10, 1,
                                    INSTR_OP_REG_PAIR_B);
             break;
         case 0xc2:
+            instr = populate_instr(INSTR_JUMP_IF_NOT_ZERO, "JNZ", 10, 3,
+                                   INSTR_OP_16);
             break;
         case 0xc3:
+            instr = populate_instr(INSTR_JUMP, "JMP", 10, 3, INSTR_OP_16);
             break;
         case 0xc4:
+            instr = populate_instr(INSTR_CALL_IF_NOT_ZERO, "CNZ", 11, 3,
+                                   INSTR_OP_16);
             break;
         case 0xc5:
             instr = populate_instr(INSTR_PUSH, "PUSH", 11, 1,
@@ -712,36 +719,56 @@ Instr fetch_instr() {
         case 0xc6:
             break;
         case 0xc7:
+            instr = populate_instr(INSTR_RESTART_0, "RST", 11, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0xc8:
+            instr = populate_instr(INSTR_RETURN_IF_ZERO, "RZ", 5, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0xc9:
+            instr = populate_instr(INSTR_RETURN, "RET", 10, 1, INSTR_OP_NONE);
             break;
         case 0xca:
+            instr = populate_instr(INSTR_JUMP_IF_ZERO, "JZ", 10, 3,
+                                   INSTR_OP_16);
             break;
         case 0xcb:
+            instr = populate_instr(INSTR_JUMP, "JMP", 10, 3, INSTR_OP_16);
+            break;
             break;
         case 0xcc:
+            instr = populate_instr(INSTR_CALL_IF_ZERO, "CZ", 11, 3,
+                                   INSTR_OP_16);
             break;
         case 0xcd:
+            instr = populate_instr(INSTR_CALL, "CALL", 17, 3, INSTR_OP_16);
             break;
         case 0xce:
             break;
         case 0xcf:
+            instr = populate_instr(INSTR_RESTART_1, "RST", 11, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0xd0:
+            instr = populate_instr(INSTR_RETURN_IF_NO_CARRY, "RNC", 5, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0xd1:
             instr = populate_instr(INSTR_POP, "POP", 10, 1,
                                    INSTR_OP_REG_PAIR_D);
             break;
         case 0xd2:
+            instr = populate_instr(INSTR_JUMP_IF_NO_CARRY, "JNC", 10, 3,
+                                   INSTR_OP_16);
             break;
         case 0xd3:
             instr = populate_instr(INSTR_OUTPUT, "OUT", 10, 2,
                                    INSTR_OP_SINGLE_8);
             break;
         case 0xd4:
+            instr = populate_instr(INSTR_CALL_IF_NO_CARRY, "CNC", 11, 3,
+                                   INSTR_OP_16);
             break;
         case 0xd5:
             instr = populate_instr(INSTR_PUSH, "PUSH", 11, 1,
@@ -750,38 +777,56 @@ Instr fetch_instr() {
         case 0xd6:
             break;
         case 0xd7:
+            instr = populate_instr(INSTR_RESTART_2, "RST", 11, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0xd8:
+            instr = populate_instr(INSTR_RETURN_IF_CARRY, "RC", 5, 1,
+                                   INSTR_OP_NONE);
+            break;
+        case 0xd9:
+            instr = populate_instr(INSTR_RETURN, "RET", 10, 1, INSTR_OP_NONE);
+            break;
+        case 0xda:
+            instr = populate_instr(INSTR_JUMP_IF_CARRY, "JC", 10, 3,
+                                   INSTR_OP_16);
+            break;
+        case 0xdb:
             instr = populate_instr(INSTR_INPUT, "IN", 10, 2,
                                    INSTR_OP_SINGLE_8);
             break;
-        case 0xd9:
-            break;
-        case 0xda:
-            break;
-        case 0xdb:
-            break;
         case 0xdc:
+            instr = populate_instr(INSTR_CALL_IF_CARRY, "CC", 11, 3,
+                                   INSTR_OP_16);
             break;
         case 0xdd:
+            instr = populate_instr(INSTR_CALL, "CALL", 17, 3, INSTR_OP_16);
             break;
         case 0xde:
             break;
         case 0xdf:
+            instr = populate_instr(INSTR_RESTART_3, "RST", 11, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0xe0:
+            instr = populate_instr(INSTR_RETURN_IF_PARITY_ODD, "RPO", 5, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0xe1:
             instr = populate_instr(INSTR_POP, "POP", 10, 1,
                                    INSTR_OP_REG_PAIR_H);
             break;
         case 0xe2:
+            instr = populate_instr(INSTR_JUMP_IF_PARITY_ODD, "JPO", 10, 3,
+                                   INSTR_OP_16);
             break;
         case 0xe3:
             instr = populate_instr(INSTR_EXCHANGE_STACK, "XTHL", 18, 1,
                                    INSTR_OP_NONE);
             break;
         case 0xe4:
+            instr = populate_instr(INSTR_CALL_IF_PARITY_ODD, "CPO", 11, 3,
+                                   INSTR_OP_16);
             break;
         case 0xe5:
             instr = populate_instr(INSTR_PUSH, "PUSH", 11, 1,
@@ -790,38 +835,57 @@ Instr fetch_instr() {
         case 0xe6:
             break;
         case 0xe7:
+            instr = populate_instr(INSTR_RESTART_4, "RST", 11, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0xe8:
+            instr = populate_instr(INSTR_RETURN_IF_PARITY_EVEN, "RPE", 5, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0xe9:
+            instr = populate_instr(INSTR_LOAD_PROGRAM_COUNTER, "PCHL", 5, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0xea:
+            instr = populate_instr(INSTR_JUMP_IF_PARITY_EVEN, "JPE", 10, 3,
+                                   INSTR_OP_16);
             break;
         case 0xeb:
             instr = populate_instr(INSTR_EXCHANGE_REGS, "XCHG", 5, 1,
                                    INSTR_OP_NONE);
             break;
         case 0xec:
+            instr = populate_instr(INSTR_CALL_IF_PARITY_EVEN, "CPE", 11, 3,
+                                   INSTR_OP_16);
             break;
         case 0xed:
+            instr = populate_instr(INSTR_CALL, "CALL", 17, 3, INSTR_OP_16);
             break;
         case 0xee:
             break;
         case 0xef:
+            instr = populate_instr(INSTR_RESTART_5, "RST", 11, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0xf0:
+            instr = populate_instr(INSTR_RETURN_IF_PLUS, "RP", 5, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0xf1:
             instr = populate_instr(INSTR_POP, "POP", 10, 1,
                                    INSTR_OP_REG_PAIR_PSW);
             break;
         case 0xf2:
+            instr = populate_instr(INSTR_JUMP_IF_PLUS, "JP", 10, 3,
+                                   INSTR_OP_16);
             break;
         case 0xf3:
             instr = populate_instr(INSTR_DISABLE_INTERRUPT, "DI", 4, 1,
                                    INSTR_OP_NONE);
             break;
         case 0xf4:
+            instr = populate_instr(INSTR_CALL_IF_PLUS, "CP", 11, 3,
+                                   INSTR_OP_16);
             break;
         case 0xf5:
             instr = populate_instr(INSTR_PUSH, "PUSH", 11, 1,
@@ -830,9 +894,11 @@ Instr fetch_instr() {
         case 0xf6:
             break;
         case 0xf7:
+            instr = populate_instr(INSTR_RESTART_6, "RST", 11, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0xf8:
-            instr = populate_instr(INSTR_ENABLE_INTERRUPT, "EI", 4, 1,
+            instr = populate_instr(INSTR_RETURN_IF_PARITY_EVEN, "RPE", 5, 1,
                                    INSTR_OP_NONE);
             break;
         case 0xf9:
@@ -840,16 +906,25 @@ Instr fetch_instr() {
                                    INSTR_OP_NONE);
             break;
         case 0xfa:
+            instr = populate_instr(INSTR_JUMP_IF_MINUS, "JM", 10, 3,
+                                   INSTR_OP_16);
             break;
         case 0xfb:
+            instr = populate_instr(INSTR_ENABLE_INTERRUPT, "EI", 4, 1,
+                                   INSTR_OP_NONE);
             break;
         case 0xfc:
+            instr = populate_instr(INSTR_CALL_IF_MINUS, "CM", 11, 3,
+                                   INSTR_OP_16);
             break;
         case 0xfd:
+            instr = populate_instr(INSTR_CALL, "CALL", 17, 3, INSTR_OP_16);
             break;
         case 0xfe:
             break;
         case 0xff:
+            instr = populate_instr(INSTR_RESTART_7, "RST", 11, 1,
+                                   INSTR_OP_NONE);
             break;
     }
 
