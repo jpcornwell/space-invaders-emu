@@ -566,132 +566,253 @@ Instr fetch_instr() {
             instr = populate_instr(INSTR_MOVE, "MOV", 5, 1, INSTR_OP_NONE);
             break;
         case 0x80:
+            instr = populate_instr(INSTR_ADD_REG, "ADD", 4, 1, INSTR_OP_REG_B);
             break;
         case 0x81:
+            instr = populate_instr(INSTR_ADD_REG, "ADD", 4, 1, INSTR_OP_REG_C);
             break;
         case 0x82:
+            instr = populate_instr(INSTR_ADD_REG, "ADD", 4, 1, INSTR_OP_REG_D);
             break;
         case 0x83:
+            instr = populate_instr(INSTR_ADD_REG, "ADD", 4, 1, INSTR_OP_REG_E);
             break;
         case 0x84:
+            instr = populate_instr(INSTR_ADD_REG, "ADD", 4, 1, INSTR_OP_REG_H);
             break;
         case 0x85:
+            instr = populate_instr(INSTR_ADD_REG, "ADD", 4, 1, INSTR_OP_REG_L);
             break;
         case 0x86:
+            instr = populate_instr(INSTR_ADD_REG, "ADD", 7, 1,
+                                   INSTR_OP_MEM_REF);
             break;
         case 0x87:
+            instr = populate_instr(INSTR_ADD_REG, "ADD", 4, 1, INSTR_OP_REG_A);
             break;
         case 0x88:
+            instr = populate_instr(INSTR_ADD_REG_WITH_CARRY, "ADC", 4, 1,
+                                   INSTR_OP_REG_B);
             break;
         case 0x89:
+            instr = populate_instr(INSTR_ADD_REG_WITH_CARRY, "ADC", 4, 1,
+                                   INSTR_OP_REG_C);
             break;
         case 0x8a:
+            instr = populate_instr(INSTR_ADD_REG_WITH_CARRY, "ADC", 4, 1,
+                                   INSTR_OP_REG_D);
             break;
         case 0x8b:
+            instr = populate_instr(INSTR_ADD_REG_WITH_CARRY, "ADC", 4, 1,
+                                   INSTR_OP_REG_E);
             break;
         case 0x8c:
+            instr = populate_instr(INSTR_ADD_REG_WITH_CARRY, "ADC", 4, 1,
+                                   INSTR_OP_REG_H);
             break;
         case 0x8d:
+            instr = populate_instr(INSTR_ADD_REG_WITH_CARRY, "ADC", 4, 1,
+                                   INSTR_OP_REG_L);
             break;
         case 0x8e:
+            instr = populate_instr(INSTR_ADD_REG_WITH_CARRY, "ADC", 7, 1,
+                                   INSTR_OP_MEM_REF);
             break;
         case 0x8f:
+            instr = populate_instr(INSTR_ADD_REG_WITH_CARRY, "ADC", 4, 1,
+                                   INSTR_OP_REG_A);
             break;
         case 0x90:
+            instr = populate_instr(INSTR_SUBTRACT_REG, "SUB", 4, 1,
+                                   INSTR_OP_REG_B);
             break;
         case 0x91:
+            instr = populate_instr(INSTR_SUBTRACT_REG, "SUB", 4, 1,
+                                   INSTR_OP_REG_C);
             break;
         case 0x92:
+            instr = populate_instr(INSTR_SUBTRACT_REG, "SUB", 4, 1,
+                                   INSTR_OP_REG_D);
             break;
         case 0x93:
+            instr = populate_instr(INSTR_SUBTRACT_REG, "SUB", 4, 1,
+                                   INSTR_OP_REG_E);
             break;
         case 0x94:
+            instr = populate_instr(INSTR_SUBTRACT_REG, "SUB", 4, 1,
+                                   INSTR_OP_REG_H);
             break;
         case 0x95:
+            instr = populate_instr(INSTR_SUBTRACT_REG, "SUB", 4, 1,
+                                   INSTR_OP_REG_L);
             break;
         case 0x96:
+            instr = populate_instr(INSTR_SUBTRACT_REG, "SUB", 7, 1,
+                                   INSTR_OP_MEM_REF);
             break;
         case 0x97:
+            instr = populate_instr(INSTR_SUBTRACT_REG, "SUB", 4, 1,
+                                   INSTR_OP_REG_A);
             break;
         case 0x98:
+            instr = populate_instr(INSTR_SUBTRACT_REG_WITH_BORROW, "SBB", 4, 1,
+                                   INSTR_OP_REG_B);
             break;
         case 0x99:
+            instr = populate_instr(INSTR_SUBTRACT_REG_WITH_BORROW, "SBB", 4, 1,
+                                   INSTR_OP_REG_C);
             break;
         case 0x9a:
+            instr = populate_instr(INSTR_SUBTRACT_REG_WITH_BORROW, "SBB", 4, 1,
+                                   INSTR_OP_REG_D);
             break;
         case 0x9b:
+            instr = populate_instr(INSTR_SUBTRACT_REG_WITH_BORROW, "SBB", 4, 1,
+                                   INSTR_OP_REG_E);
             break;
         case 0x9c:
+            instr = populate_instr(INSTR_SUBTRACT_REG_WITH_BORROW, "SBB", 4, 1,
+                                   INSTR_OP_REG_H);
             break;
         case 0x9d:
+            instr = populate_instr(INSTR_SUBTRACT_REG_WITH_BORROW, "SBB", 4, 1,
+                                   INSTR_OP_REG_L);
             break;
         case 0x9e:
+            instr = populate_instr(INSTR_SUBTRACT_REG_WITH_BORROW, "SBB", 7, 1,
+                                   INSTR_OP_MEM_REF);
             break;
         case 0x9f:
+            instr = populate_instr(INSTR_SUBTRACT_REG_WITH_BORROW, "SBB", 4, 1,
+                                   INSTR_OP_REG_A);
             break;
         case 0xa0:
+            instr = populate_instr(INSTR_AND_REG, "ANA", 4, 1,
+                                   INSTR_OP_REG_B);
             break;
         case 0xa1:
+            instr = populate_instr(INSTR_AND_REG, "ANA", 4, 1,
+                                   INSTR_OP_REG_C);
             break;
         case 0xa2:
+            instr = populate_instr(INSTR_AND_REG, "ANA", 4, 1,
+                                   INSTR_OP_REG_D);
             break;
         case 0xa3:
+            instr = populate_instr(INSTR_AND_REG, "ANA", 4, 1,
+                                   INSTR_OP_REG_E);
             break;
         case 0xa4:
+            instr = populate_instr(INSTR_AND_REG, "ANA", 4, 1,
+                                   INSTR_OP_REG_H);
             break;
         case 0xa5:
+            instr = populate_instr(INSTR_AND_REG, "ANA", 4, 1,
+                                   INSTR_OP_REG_L);
             break;
         case 0xa6:
+            instr = populate_instr(INSTR_AND_REG, "ANA", 7, 1,
+                                   INSTR_OP_MEM_REF);
             break;
         case 0xa7:
+            instr = populate_instr(INSTR_AND_REG, "ANA", 4, 1,
+                                   INSTR_OP_REG_A);
             break;
         case 0xa8:
+            instr = populate_instr(INSTR_XOR_REG, "XRA", 4, 1,
+                                   INSTR_OP_REG_B);
             break;
         case 0xa9:
+            instr = populate_instr(INSTR_XOR_REG, "XRA", 4, 1,
+                                   INSTR_OP_REG_C);
             break;
         case 0xaa:
+            instr = populate_instr(INSTR_XOR_REG, "XRA", 4, 1,
+                                   INSTR_OP_REG_D);
             break;
         case 0xab:
+            instr = populate_instr(INSTR_XOR_REG, "XRA", 4, 1,
+                                   INSTR_OP_REG_E);
             break;
         case 0xac:
+            instr = populate_instr(INSTR_XOR_REG, "XRA", 4, 1,
+                                   INSTR_OP_REG_H);
             break;
         case 0xad:
+            instr = populate_instr(INSTR_XOR_REG, "XRA", 4, 1,
+                                   INSTR_OP_REG_L);
             break;
         case 0xae:
+            instr = populate_instr(INSTR_XOR_REG, "XRA", 7, 1,
+                                   INSTR_OP_MEM_REF);
             break;
         case 0xaf:
+            instr = populate_instr(INSTR_XOR_REG, "XRA", 4, 1,
+                                   INSTR_OP_REG_A);
             break;
         case 0xb0:
+            instr = populate_instr(INSTR_OR_REG, "ORA", 4, 1,
+                                   INSTR_OP_REG_B);
             break;
         case 0xb1:
+            instr = populate_instr(INSTR_OR_REG, "ORA", 4, 1,
+                                   INSTR_OP_REG_C);
             break;
         case 0xb2:
+            instr = populate_instr(INSTR_OR_REG, "ORA", 4, 1,
+                                   INSTR_OP_REG_D);
             break;
         case 0xb3:
+            instr = populate_instr(INSTR_OR_REG, "ORA", 4, 1,
+                                   INSTR_OP_REG_E);
             break;
         case 0xb4:
+            instr = populate_instr(INSTR_OR_REG, "ORA", 4, 1,
+                                   INSTR_OP_REG_H);
             break;
         case 0xb5:
+            instr = populate_instr(INSTR_OR_REG, "ORA", 4, 1,
+                                   INSTR_OP_REG_L);
             break;
         case 0xb6:
+            instr = populate_instr(INSTR_OR_REG, "ORA", 7, 1,
+                                   INSTR_OP_MEM_REF);
             break;
         case 0xb7:
+            instr = populate_instr(INSTR_OR_REG, "ORA", 4, 1,
+                                   INSTR_OP_REG_A);
             break;
         case 0xb8:
+            instr = populate_instr(INSTR_COMPARE_REG, "CMP", 4, 1,
+                                   INSTR_OP_REG_B);
             break;
         case 0xb9:
+            instr = populate_instr(INSTR_COMPARE_REG, "CMP", 4, 1,
+                                   INSTR_OP_REG_C);
             break;
         case 0xba:
+            instr = populate_instr(INSTR_COMPARE_REG, "CMP", 4, 1,
+                                   INSTR_OP_REG_D);
             break;
         case 0xbb:
+            instr = populate_instr(INSTR_COMPARE_REG, "CMP", 4, 1,
+                                   INSTR_OP_REG_E);
             break;
         case 0xbc:
+            instr = populate_instr(INSTR_COMPARE_REG, "CMP", 4, 1,
+                                   INSTR_OP_REG_H);
             break;
         case 0xbd:
+            instr = populate_instr(INSTR_COMPARE_REG, "CMP", 4, 1,
+                                   INSTR_OP_REG_L);
             break;
         case 0xbe:
+            instr = populate_instr(INSTR_COMPARE_REG, "CMP", 7, 1,
+                                   INSTR_OP_MEM_REF);
             break;
         case 0xbf:
+            instr = populate_instr(INSTR_COMPARE_REG, "CMP", 4, 1,
+                                   INSTR_OP_REG_A);
             break;
         case 0xc0:
             instr = populate_instr(INSTR_RETURN_IF_NOT_ZERO, "RNZ", 5, 1,
@@ -717,6 +838,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_B);
             break;
         case 0xc6:
+            instr = populate_instr(INSTR_ADD_IMMEDIATE, "ADI", 7, 2,
+                                   INSTR_OP_SINGLE_8);
             break;
         case 0xc7:
             instr = populate_instr(INSTR_RESTART_0, "RST", 11, 1,
@@ -745,6 +868,8 @@ Instr fetch_instr() {
             instr = populate_instr(INSTR_CALL, "CALL", 17, 3, INSTR_OP_16);
             break;
         case 0xce:
+            instr = populate_instr(INSTR_ADD_IMMEDIATE_WITH_CARRY, "ACI", 7, 2,
+                                   INSTR_OP_SINGLE_8);
             break;
         case 0xcf:
             instr = populate_instr(INSTR_RESTART_1, "RST", 11, 1,
@@ -775,6 +900,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_D);
             break;
         case 0xd6:
+            instr = populate_instr(INSTR_SUBTRACT_IMMEDIATE, "SUI", 7, 2,
+                                   INSTR_OP_SINGLE_8);
             break;
         case 0xd7:
             instr = populate_instr(INSTR_RESTART_2, "RST", 11, 1,
@@ -803,6 +930,8 @@ Instr fetch_instr() {
             instr = populate_instr(INSTR_CALL, "CALL", 17, 3, INSTR_OP_16);
             break;
         case 0xde:
+            instr = populate_instr(INSTR_SUBTRACT_IMMEDIATE_WITH_BORROW, "SBI",
+                                   7, 2, INSTR_OP_SINGLE_8);
             break;
         case 0xdf:
             instr = populate_instr(INSTR_RESTART_3, "RST", 11, 1,
@@ -833,6 +962,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_H);
             break;
         case 0xe6:
+            instr = populate_instr(INSTR_AND_IMMEDIATE, "ANI", 7, 2,
+                                   INSTR_OP_SINGLE_8);
             break;
         case 0xe7:
             instr = populate_instr(INSTR_RESTART_4, "RST", 11, 1,
@@ -862,6 +993,8 @@ Instr fetch_instr() {
             instr = populate_instr(INSTR_CALL, "CALL", 17, 3, INSTR_OP_16);
             break;
         case 0xee:
+            instr = populate_instr(INSTR_XOR_IMMEDIATE, "XRI", 7, 2,
+                                   INSTR_OP_SINGLE_8);
             break;
         case 0xef:
             instr = populate_instr(INSTR_RESTART_5, "RST", 11, 1,
@@ -892,6 +1025,8 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_PAIR_PSW);
             break;
         case 0xf6:
+            instr = populate_instr(INSTR_OR_IMMEDIATE, "ORI", 7, 2,
+                                   INSTR_OP_SINGLE_8);
             break;
         case 0xf7:
             instr = populate_instr(INSTR_RESTART_6, "RST", 11, 1,
@@ -921,6 +1056,8 @@ Instr fetch_instr() {
             instr = populate_instr(INSTR_CALL, "CALL", 17, 3, INSTR_OP_16);
             break;
         case 0xfe:
+            instr = populate_instr(INSTR_COMPARE_IMMEDIATE, "CPI", 7, 2,
+                                   INSTR_OP_SINGLE_8);
             break;
         case 0xff:
             instr = populate_instr(INSTR_RESTART_7, "RST", 11, 1,
