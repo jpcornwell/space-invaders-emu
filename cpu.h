@@ -152,5 +152,6 @@ typedef struct Instr {
 
 void init_cpu(void);
 Instr fetch_instr(void);
+void exec_instr(Instr);
 
 #endif

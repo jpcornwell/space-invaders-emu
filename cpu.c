@@ -1,4 +1,5 @@
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,6 +8,21 @@
 #include "cpu.h"
 
 uint16_t pc;
+uint16_t sp;
+
+uint8_t reg_A;
+uint8_t reg_B;
+uint8_t reg_C;
+uint8_t reg_D;
+uint8_t reg_E;
+uint8_t reg_H;
+uint8_t reg_L;
+
+bool flag_sign;
+bool flag_zero;
+bool flag_aux_carry;
+bool flag_parity;
+bool flag_carry;
 
 // temporarily keep memory in here
 uint8_t memory[65536];
@@ -24,6 +40,21 @@ void init_cpu() {
     fclose(fp);
 
     pc = 0;
+    sp = 0;
+
+    reg_A = 0;
+    reg_B = 0;
+    reg_C = 0;
+    reg_D = 0;
+    reg_E = 0;
+    reg_H = 0;
+    reg_L = 0;
+
+    flag_sign = false;
+    flag_zero = false;
+    flag_aux_carry = false;
+    flag_parity = false;
+    flag_carry = false;
 }
 
 Instr populate_instr(InstrType type, char *mnenomic, int cycle_count,
@@ -1071,14 +1102,323 @@ Instr fetch_instr() {
         exit(1);
     }
 
-    // temporarily increment pc here
-    pc += instr.byte_count;
-
-    // temporarily exit when pc reaches end of ROM
-    if (pc >= 0x1fff) {
-        printf("Complete: have reached the end of ROM\n");
-        exit(0);
-    }
-
     return instr;
 }
+
+void no_logic(Instr instr) {
+    printf("Instruction logic not implemented.\nOpcode: 0x%02x\n",
+            instr.opcode);
+    exit(0);
+}
+
+uint8_t *get_reg_op(InstrOpType op_type) {
+    switch (op_type) {
+        case INSTR_OP_REG_B:
+            return &reg_B;
+            break;
+        case INSTR_OP_REG_C:
+            return &reg_C;
+            break;
+        case INSTR_OP_REG_D:
+            return &reg_D;
+            break;
+        case INSTR_OP_REG_E:
+            return &reg_E;
+            break;
+        case INSTR_OP_REG_H:
+            return &reg_H;
+            break;
+        case INSTR_OP_REG_L:
+            return &reg_L;
+            break;
+        case INSTR_OP_REG_A:
+            return &reg_A;
+            break;
+        case INSTR_OP_MEM_REF:
+            return &memory[(reg_H << 8) + reg_L];
+            break;
+        default:
+            printf("Error: Operand type not recognized\n");
+            exit(0);
+            break;
+    }
+}
+
+bool is_parity_even(uint8_t val) {
+    bool parity = true;
+    while (val) {
+        parity ^= val & 0x1;
+        val = val >> 1;
+    }
+    return parity;
+}
+
+void exec_instr(Instr instr) {
+
+    pc += instr.byte_count;
+
+    switch (instr.type) {
+        case INSTR_NOP:
+            break;
+        case INSTR_HALT:
+            no_logic(instr);
+            break;
+        case INSTR_DISABLE_INTERRUPT:
+            no_logic(instr);
+            break;
+        case INSTR_ENABLE_INTERRUPT:
+            no_logic(instr);
+            break;
+        case INSTR_OUTPUT:
+            no_logic(instr);
+            break;
+        case INSTR_INPUT:
+            no_logic(instr);
+            break;
+        case INSTR_DOUBLE_ADD:
+            no_logic(instr);
+            break;
+        case INSTR_INCREMENT_REG_PAIR:
+            no_logic(instr);
+            break;
+        case INSTR_DECREMENT_REG_PAIR:
+            no_logic(instr);
+            break;
+        case INSTR_POP:
+            no_logic(instr);
+            break;
+        case INSTR_PUSH:
+            no_logic(instr);
+            break;
+        case INSTR_EXCHANGE_STACK:
+            no_logic(instr);
+            break;
+        case INSTR_LOAD_SP_FROM_HL:
+            no_logic(instr);
+            break;
+        case INSTR_EXCHANGE_REGS:
+            no_logic(instr);
+            break;
+        case INSTR_LOAD_HL_DIRECT:
+            no_logic(instr);
+            break;
+        case INSTR_STORE_HL_DIRECT:
+            no_logic(instr);
+            break;
+        case INSTR_LOAD_REG_PAIR_IMMEDIATE:
+            no_logic(instr);
+            break;
+        case INSTR_STORE_ACCUMULATOR:
+            no_logic(instr);
+            break;
+        case INSTR_LOAD_ACCUMULATOR:
+            no_logic(instr);
+            break;
+        case INSTR_STORE_ACCUMULATOR_DIRECT:
+            no_logic(instr);
+            break;
+        case INSTR_LOAD_ACCUMULATOR_DIRECT:
+            no_logic(instr);
+            break;
+        case INSTR_MOVE_IMMEDIATE:
+            no_logic(instr);
+            break;
+        case INSTR_MOVE:
+            no_logic(instr);
+            break;
+        case INSTR_INCREMENT_REG: {
+            uint8_t *op_ptr = get_reg_op(instr.op_type);
+            uint8_t val = *op_ptr + 1;
+            flag_zero = (val == 0);
+            flag_sign = val >> 7;
+            flag_parity = is_parity_even(val);
+            flag_aux_carry = ((*op_ptr & 0xf) + 1) > 0xf;
+            *op_ptr = val;
+            break;
+        }
+        case INSTR_DECREMENT_REG:
+            no_logic(instr);
+            break;
+        case INSTR_ROTATE_ACCUMULATOR_LEFT:
+            no_logic(instr);
+            break;
+        case INSTR_ROTATE_ACCUMULATOR_RIGHT:
+            no_logic(instr);
+            break;
+        case INSTR_ROTATE_ACCUMULATOR_LEFT_CARRY:
+            no_logic(instr);
+            break;
+        case INSTR_ROTATE_ACCUMULATOR_RIGHT_CARRY:
+            no_logic(instr);
+            break;
+        case INSTR_DECIMAL_ADJUST_ACCUMULATOR:
+            no_logic(instr);
+            break;
+        case INSTR_COMPLEMENT_ACCUMULATOR:
+            no_logic(instr);
+            break;
+        case INSTR_SET_CARRY:
+            flag_carry = true;
+            break;
+        case INSTR_COMPLEMENT_CARRY:
+            flag_carry = !flag_carry;
+            break;
+        case INSTR_RESTART_0:
+            no_logic(instr);
+            break;
+        case INSTR_RESTART_1:
+            no_logic(instr);
+            break;
+        case INSTR_RESTART_2:
+            no_logic(instr);
+            break;
+        case INSTR_RESTART_3:
+            no_logic(instr);
+            break;
+        case INSTR_RESTART_4:
+            no_logic(instr);
+            break;
+        case INSTR_RESTART_5:
+            no_logic(instr);
+            break;
+        case INSTR_RESTART_6:
+            no_logic(instr);
+            break;
+        case INSTR_RESTART_7:
+            no_logic(instr);
+            break;
+        case INSTR_CALL:
+            no_logic(instr);
+            break;
+        case INSTR_CALL_IF_CARRY:
+            no_logic(instr);
+            break;
+        case INSTR_CALL_IF_NO_CARRY:
+            no_logic(instr);
+            break;
+        case INSTR_CALL_IF_ZERO:
+            no_logic(instr);
+            break;
+        case INSTR_CALL_IF_NOT_ZERO:
+            no_logic(instr);
+            break;
+        case INSTR_CALL_IF_MINUS:
+            no_logic(instr);
+            break;
+        case INSTR_CALL_IF_PLUS:
+            no_logic(instr);
+            break;
+        case INSTR_CALL_IF_PARITY_EVEN:
+            no_logic(instr);
+            break;
+        case INSTR_CALL_IF_PARITY_ODD:
+            no_logic(instr);
+            break;
+        case INSTR_LOAD_PROGRAM_COUNTER:
+            no_logic(instr);
+            break;
+        case INSTR_JUMP:
+            no_logic(instr);
+            break;
+        case INSTR_JUMP_IF_CARRY:
+            no_logic(instr);
+            break;
+        case INSTR_JUMP_IF_NO_CARRY:
+            no_logic(instr);
+            break;
+        case INSTR_JUMP_IF_ZERO:
+            no_logic(instr);
+            break;
+        case INSTR_JUMP_IF_NOT_ZERO:
+            no_logic(instr);
+            break;
+        case INSTR_JUMP_IF_MINUS:
+            no_logic(instr);
+            break;
+        case INSTR_JUMP_IF_PLUS:
+            no_logic(instr);
+            break;
+        case INSTR_JUMP_IF_PARITY_EVEN:
+            no_logic(instr);
+            break;
+        case INSTR_JUMP_IF_PARITY_ODD:
+            no_logic(instr);
+            break;
+        case INSTR_RETURN:
+            no_logic(instr);
+            break;
+        case INSTR_RETURN_IF_CARRY:
+            no_logic(instr);
+            break;
+        case INSTR_RETURN_IF_NO_CARRY:
+            no_logic(instr);
+            break;
+        case INSTR_RETURN_IF_ZERO:
+            no_logic(instr);
+            break;
+        case INSTR_RETURN_IF_NOT_ZERO:
+            no_logic(instr);
+            break;
+        case INSTR_RETURN_IF_MINUS:
+            no_logic(instr);
+            break;
+        case INSTR_RETURN_IF_PLUS:
+            no_logic(instr);
+            break;
+        case INSTR_RETURN_IF_PARITY_EVEN:
+            no_logic(instr);
+            break;
+        case INSTR_RETURN_IF_PARITY_ODD:
+            no_logic(instr);
+            break;
+        case INSTR_ADD_REG:
+            no_logic(instr);
+            break;
+        case INSTR_ADD_REG_WITH_CARRY:
+            no_logic(instr);
+            break;
+        case INSTR_SUBTRACT_REG:
+            no_logic(instr);
+            break;
+        case INSTR_SUBTRACT_REG_WITH_BORROW:
+            no_logic(instr);
+            break;
+        case INSTR_AND_REG:
+            no_logic(instr);
+            break;
+        case INSTR_XOR_REG:
+            no_logic(instr);
+            break;
+        case INSTR_OR_REG:
+            no_logic(instr);
+            break;
+        case INSTR_COMPARE_REG:
+            no_logic(instr);
+            break;
+        case INSTR_ADD_IMMEDIATE:
+            no_logic(instr);
+            break;
+        case INSTR_ADD_IMMEDIATE_WITH_CARRY:
+            no_logic(instr);
+            break;
+        case INSTR_SUBTRACT_IMMEDIATE:
+            no_logic(instr);
+            break;
+        case INSTR_SUBTRACT_IMMEDIATE_WITH_BORROW:
+            no_logic(instr);
+            break;
+        case INSTR_AND_IMMEDIATE:
+            no_logic(instr);
+            break;
+        case INSTR_XOR_IMMEDIATE:
+            no_logic(instr);
+            break;
+        case INSTR_OR_IMMEDIATE:
+            no_logic(instr);
+            break;
+        case INSTR_COMPARE_IMMEDIATE:
+            no_logic(instr);
+            break;
+    }
+}
+
