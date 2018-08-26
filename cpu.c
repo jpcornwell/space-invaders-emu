@@ -1153,6 +1153,12 @@ bool is_parity_even(uint8_t val) {
     return parity;
 }
 
+void calculate_non_carry_flags(uint8_t val) {
+    flag_zero = (val == 0);
+    flag_sign = val >> 7;
+    flag_parity = is_parity_even(val);
+}
+
 void exec_instr(Instr instr) {
 
     pc += instr.byte_count;
@@ -1229,9 +1235,7 @@ void exec_instr(Instr instr) {
         case INSTR_INCREMENT_REG: {
             uint8_t *op_ptr = get_reg_op(instr.op_type);
             uint8_t val = *op_ptr + 1;
-            flag_zero = (val == 0);
-            flag_sign = val >> 7;
-            flag_parity = is_parity_even(val);
+            calculate_non_carry_flags(val);
             flag_aux_carry = ((*op_ptr & 0xf) + 1) > 0xf;
             *op_ptr = val;
             break;
