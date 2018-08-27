@@ -86,55 +86,55 @@ Instr populate_instr(InstrType type, char *mnenomic, int cycle_count,
 
         switch (op_src) {
             case 0:
-                instr.move_source = MOV_LOC_B;
+                instr.move_source = INSTR_OP_REG_B;
                 break;
             case 1:
-                instr.move_source = MOV_LOC_C;
+                instr.move_source = INSTR_OP_REG_C;
                 break;
             case 2:
-                instr.move_source = MOV_LOC_D;
+                instr.move_source = INSTR_OP_REG_D;
                 break;
             case 3:
-                instr.move_source = MOV_LOC_E;
+                instr.move_source = INSTR_OP_REG_E;
                 break;
             case 4:
-                instr.move_source = MOV_LOC_H;
+                instr.move_source = INSTR_OP_REG_H;
                 break;
             case 5:
-                instr.move_source = MOV_LOC_L;
+                instr.move_source = INSTR_OP_REG_L;
                 break;
             case 6:
-                instr.move_source = MOV_LOC_MEM_REF;
+                instr.move_source = INSTR_OP_MEM_REF;
                 break;
             case 7:
-                instr.move_source = MOV_LOC_A;
+                instr.move_source = INSTR_OP_REG_A;
                 break;
         }
 
         switch (op_dest) {
             case 0:
-                instr.move_destination = MOV_LOC_B;
+                instr.move_destination = INSTR_OP_REG_B;
                 break;
             case 1:
-                instr.move_destination = MOV_LOC_C;
+                instr.move_destination = INSTR_OP_REG_C;
                 break;
             case 2:
-                instr.move_destination = MOV_LOC_D;
+                instr.move_destination = INSTR_OP_REG_D;
                 break;
             case 3:
-                instr.move_destination = MOV_LOC_E;
+                instr.move_destination = INSTR_OP_REG_E;
                 break;
             case 4:
-                instr.move_destination = MOV_LOC_H;
+                instr.move_destination = INSTR_OP_REG_H;
                 break;
             case 5:
-                instr.move_destination = MOV_LOC_L;
+                instr.move_destination = INSTR_OP_REG_L;
                 break;
             case 6:
-                instr.move_destination = MOV_LOC_MEM_REF;
+                instr.move_destination = INSTR_OP_MEM_REF;
                 break;
             case 7:
-                instr.move_destination = MOV_LOC_A;
+                instr.move_destination = INSTR_OP_REG_A;
                 break;
         }
     }
@@ -1229,9 +1229,12 @@ void exec_instr(Instr instr) {
         case INSTR_MOVE_IMMEDIATE:
             no_logic(instr);
             break;
-        case INSTR_MOVE:
-            no_logic(instr);
+        case INSTR_MOVE: {
+            uint8_t *source_ptr = get_reg_op(instr.move_source);
+            uint8_t *dest_ptr = get_reg_op(instr.move_destination);
+            *dest_ptr = *source_ptr;
             break;
+        }
         case INSTR_INCREMENT_REG: {
             uint8_t *op_ptr = get_reg_op(instr.op_type);
             uint8_t val = *op_ptr + 1;
@@ -1240,9 +1243,14 @@ void exec_instr(Instr instr) {
             *op_ptr = val;
             break;
         }
-        case INSTR_DECREMENT_REG:
-            no_logic(instr);
+        case INSTR_DECREMENT_REG: {
+            uint8_t *op_ptr = get_reg_op(instr.op_type);
+            uint8_t val = *op_ptr - 1;
+            calculate_non_carry_flags(val);
+            flag_aux_carry = ((*op_ptr & 0xf) - 1) > 0xf;
+            *op_ptr = val;
             break;
+        }
         case INSTR_ROTATE_ACCUMULATOR_LEFT:
             no_logic(instr);
             break;
@@ -1259,7 +1267,7 @@ void exec_instr(Instr instr) {
             no_logic(instr);
             break;
         case INSTR_COMPLEMENT_ACCUMULATOR:
-            no_logic(instr);
+            reg_A = ~reg_A;
             break;
         case INSTR_SET_CARRY:
             flag_carry = true;
