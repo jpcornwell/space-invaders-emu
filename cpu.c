@@ -1159,6 +1159,12 @@ void calculate_non_carry_flags(uint8_t val) {
     flag_parity = is_parity_even(val);
 }
 
+uint16_t get_swapped_bytes(uint16_t val) {
+    uint16_t swapped = (val & 0xf0) >> 8;
+    swapped = swapped | ((val & 0x0f) << 8);
+    return swapped;
+}
+
 void exec_instr(Instr instr) {
 
     pc += instr.byte_count;
@@ -1196,15 +1202,29 @@ void exec_instr(Instr instr) {
         case INSTR_PUSH:
             no_logic(instr);
             break;
-        case INSTR_EXCHANGE_STACK:
-            no_logic(instr);
+        case INSTR_EXCHANGE_STACK: {
+            uint8_t temp;
+            temp = reg_H;
+            reg_H = memory[sp + 1];
+            memory[sp + 1] = temp;
+            temp = reg_L;
+            reg_L = memory[sp];
+            memory[sp] = temp;
             break;
+        }
         case INSTR_LOAD_SP_FROM_HL:
-            no_logic(instr);
+            sp = ((uint16_t)reg_H << 8) | reg_L;
             break;
-        case INSTR_EXCHANGE_REGS:
-            no_logic(instr);
+        case INSTR_EXCHANGE_REGS: {
+            uint8_t temp;
+            temp = reg_H;
+            reg_H = reg_D;
+            reg_D = temp;
+            temp = reg_L;
+            reg_L = reg_E;
+            reg_E = temp;
             break;
+        }
         case INSTR_LOAD_HL_DIRECT:
             no_logic(instr);
             break;
@@ -1214,12 +1234,22 @@ void exec_instr(Instr instr) {
         case INSTR_LOAD_REG_PAIR_IMMEDIATE:
             no_logic(instr);
             break;
-        case INSTR_STORE_ACCUMULATOR:
-            no_logic(instr);
+        case INSTR_STORE_ACCUMULATOR: {
+            if (instr.op_type == INSTR_OP_REG_B) {
+                memory[((uint16_t)reg_B << 8) | reg_C] = reg_A;
+            } else if (instr.op_type == INSTR_OP_REG_D) {
+                memory[((uint16_t)reg_D << 8) | reg_E] = reg_A;
+            }
             break;
-        case INSTR_LOAD_ACCUMULATOR:
-            no_logic(instr);
+        }
+        case INSTR_LOAD_ACCUMULATOR: {
+            if (instr.op_type == INSTR_OP_REG_B) {
+                reg_A = memory[((uint16_t)reg_B << 8) | reg_C];
+            } else if (instr.op_type == INSTR_OP_REG_D) {
+                reg_A = memory[((uint16_t)reg_D << 8) | reg_E];
+            }
             break;
+        }
         case INSTR_STORE_ACCUMULATOR_DIRECT:
             no_logic(instr);
             break;
@@ -1252,17 +1282,29 @@ void exec_instr(Instr instr) {
             break;
         }
         case INSTR_ROTATE_ACCUMULATOR_LEFT:
-            no_logic(instr);
+            flag_carry = reg_A & 0x80;
+            reg_A = reg_A << 1;
+            reg_A = reg_A | (flag_carry ? 0x01 : 0x00);
             break;
         case INSTR_ROTATE_ACCUMULATOR_RIGHT:
-            no_logic(instr);
+            flag_carry = reg_A & 0x01;
+            reg_A = reg_A >> 1;
+            reg_A = reg_A | (flag_carry ? 0x80 : 0x00);
             break;
-        case INSTR_ROTATE_ACCUMULATOR_LEFT_CARRY:
-            no_logic(instr);
+        case INSTR_ROTATE_ACCUMULATOR_LEFT_CARRY: {
+            bool old_carry = flag_carry;
+            flag_carry = reg_A & 0x80;
+            reg_A = reg_A << 1;
+            reg_A = reg_A | (old_carry ? 0x01 : 0x00);
             break;
-        case INSTR_ROTATE_ACCUMULATOR_RIGHT_CARRY:
-            no_logic(instr);
+        }
+        case INSTR_ROTATE_ACCUMULATOR_RIGHT_CARRY: {
+            bool old_carry = flag_carry;
+            flag_carry = reg_A & 0x01;
+            reg_A = reg_A >> 1;
+            reg_A = reg_A | (old_carry ? 0x80 : 0x00);
             break;
+        }
         case INSTR_DECIMAL_ADJUST_ACCUMULATOR:
             no_logic(instr);
             break;
@@ -1329,9 +1371,11 @@ void exec_instr(Instr instr) {
         case INSTR_LOAD_PROGRAM_COUNTER:
             no_logic(instr);
             break;
-        case INSTR_JUMP:
-            no_logic(instr);
+        case INSTR_JUMP: {
+            uint16_t address = get_swapped_bytes(instr.operand_16);
+            pc = memory[address];
             break;
+        }
         case INSTR_JUMP_IF_CARRY:
             no_logic(instr);
             break;
