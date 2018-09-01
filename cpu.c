@@ -1114,27 +1114,35 @@ void no_logic(Instr instr) {
 uint8_t *get_reg_op(InstrOpType op_type) {
     switch (op_type) {
         case INSTR_OP_REG_B:
+        case INSTR_OP_REG_B_AND_OP_8:
             return &reg_B;
             break;
         case INSTR_OP_REG_C:
+        case INSTR_OP_REG_C_AND_OP_8:
             return &reg_C;
             break;
         case INSTR_OP_REG_D:
+        case INSTR_OP_REG_D_AND_OP_8:
             return &reg_D;
             break;
         case INSTR_OP_REG_E:
+        case INSTR_OP_REG_E_AND_OP_8:
             return &reg_E;
             break;
         case INSTR_OP_REG_H:
+        case INSTR_OP_REG_H_AND_OP_8:
             return &reg_H;
             break;
         case INSTR_OP_REG_L:
+        case INSTR_OP_REG_L_AND_OP_8:
             return &reg_L;
             break;
         case INSTR_OP_REG_A:
+        case INSTR_OP_REG_A_AND_OP_8:
             return &reg_A;
             break;
         case INSTR_OP_MEM_REF:
+        case INSTR_OP_MEM_REF_AND_OP_8:
             return &memory[(reg_H << 8) + reg_L];
             break;
         default:
@@ -1251,14 +1259,16 @@ void exec_instr(Instr instr) {
             break;
         }
         case INSTR_STORE_ACCUMULATOR_DIRECT:
-            no_logic(instr);
+            memory[get_swapped_bytes(instr.operand_16)] = reg_A;
             break;
         case INSTR_LOAD_ACCUMULATOR_DIRECT:
-            no_logic(instr);
+            reg_A = memory[get_swapped_bytes(instr.operand_16)];
             break;
-        case INSTR_MOVE_IMMEDIATE:
-            no_logic(instr);
+        case INSTR_MOVE_IMMEDIATE: {
+            uint8_t *op_ptr = get_reg_op(instr.op_type);
+            *op_ptr = instr.operand_8_1;
             break;
+        }
         case INSTR_MOVE: {
             uint8_t *source_ptr = get_reg_op(instr.move_source);
             uint8_t *dest_ptr = get_reg_op(instr.move_destination);
@@ -1368,38 +1378,63 @@ void exec_instr(Instr instr) {
         case INSTR_CALL_IF_PARITY_ODD:
             no_logic(instr);
             break;
-        case INSTR_LOAD_PROGRAM_COUNTER:
-            no_logic(instr);
-            break;
-        case INSTR_JUMP: {
-            uint16_t address = get_swapped_bytes(instr.operand_16);
-            pc = memory[address];
+        case INSTR_LOAD_PROGRAM_COUNTER: {
+            uint16_t address = ((uint16_t)reg_H << 8) | reg_L;
+            pc = address;
             break;
         }
-        case INSTR_JUMP_IF_CARRY:
-            no_logic(instr);
+        case INSTR_JUMP: {
+            pc = get_swapped_bytes(instr.operand_16);
             break;
-        case INSTR_JUMP_IF_NO_CARRY:
-            no_logic(instr);
+        }
+        case INSTR_JUMP_IF_CARRY: {
+            if (flag_carry) {
+                pc = get_swapped_bytes(instr.operand_16);
+            }
             break;
-        case INSTR_JUMP_IF_ZERO:
-            no_logic(instr);
+        }
+        case INSTR_JUMP_IF_NO_CARRY: {
+            if (!flag_carry) {
+                pc = get_swapped_bytes(instr.operand_16);
+            }
             break;
-        case INSTR_JUMP_IF_NOT_ZERO:
-            no_logic(instr);
+        }
+        case INSTR_JUMP_IF_ZERO: {
+            if (flag_zero) {
+                pc = get_swapped_bytes(instr.operand_16);
+            }
             break;
-        case INSTR_JUMP_IF_MINUS:
-            no_logic(instr);
+        }
+        case INSTR_JUMP_IF_NOT_ZERO: {
+            if (!flag_zero) {
+                pc = get_swapped_bytes(instr.operand_16);
+            }
             break;
-        case INSTR_JUMP_IF_PLUS:
-            no_logic(instr);
+        }
+        case INSTR_JUMP_IF_MINUS: {
+            if (flag_sign) {
+                pc = get_swapped_bytes(instr.operand_16);
+            }
             break;
-        case INSTR_JUMP_IF_PARITY_EVEN:
-            no_logic(instr);
+        }
+        case INSTR_JUMP_IF_PLUS: {
+            if (!flag_sign) {
+                pc = get_swapped_bytes(instr.operand_16);
+            }
             break;
-        case INSTR_JUMP_IF_PARITY_ODD:
-            no_logic(instr);
+        }
+        case INSTR_JUMP_IF_PARITY_EVEN: {
+            if (flag_parity) {
+                pc = get_swapped_bytes(instr.operand_16);
+            }
             break;
+        }
+        case INSTR_JUMP_IF_PARITY_ODD: {
+            if (!flag_parity) {
+                pc = get_swapped_bytes(instr.operand_16);
+            }
+            break;
+        }
         case INSTR_RETURN:
             no_logic(instr);
             break;
@@ -1427,30 +1462,74 @@ void exec_instr(Instr instr) {
         case INSTR_RETURN_IF_PARITY_ODD:
             no_logic(instr);
             break;
-        case INSTR_ADD_REG:
-            no_logic(instr);
+        case INSTR_ADD_REG: {
+            uint8_t *op_ptr = get_reg_op(instr.op_type);
+            uint16_t val = (uint16_t)*op_ptr + (uint16_t)reg_A;
+            calculate_non_carry_flags(val & 0xff);
+            flag_carry = (val >> 8) > 0;
+            flag_aux_carry = ((*op_ptr & 0xf) + (reg_A & 0xf)) > 0xf;
+            reg_A = val;
             break;
-        case INSTR_ADD_REG_WITH_CARRY:
-            no_logic(instr);
+        }
+        case INSTR_ADD_REG_WITH_CARRY: {
+            uint8_t *op_ptr = get_reg_op(instr.op_type);
+            uint16_t val = (uint16_t)*op_ptr + (uint16_t)reg_A + flag_carry;
+            calculate_non_carry_flags(val & 0xff);
+            flag_aux_carry = ((*op_ptr & 0xf) + (reg_A & 0xf) 
+                             + flag_carry) > 0xf;
+            flag_carry = (val >> 8) > 0;
+            reg_A = val;
             break;
-        case INSTR_SUBTRACT_REG:
-            no_logic(instr);
+        }
+        case INSTR_SUBTRACT_REG: {
+            uint8_t *op_ptr = get_reg_op(instr.op_type);
+            uint16_t val = ~(uint16_t)*op_ptr + 1 + (uint16_t)reg_A;
+            calculate_non_carry_flags(val & 0xff);
+            flag_carry = (val >> 8) > 0;
+            flag_aux_carry = (~(*op_ptr & 0xf) + 1 + (reg_A & 0xf)) > 0xf;
+            reg_A = val;
             break;
-        case INSTR_SUBTRACT_REG_WITH_BORROW:
-            no_logic(instr);
+        }
+        case INSTR_SUBTRACT_REG_WITH_BORROW: {
+            uint8_t *op_ptr = get_reg_op(instr.op_type);
+            uint16_t val = ~(uint16_t)*op_ptr + 1 + (uint16_t)reg_A 
+                           + flag_carry;
+            calculate_non_carry_flags(val & 0xff);
+            flag_aux_carry = (~(((*op_ptr) + flag_carry) & 0xf) + 1 
+                              + (reg_A & 0xf)) > 0xf;
+            flag_carry = (val >> 8) > 0;
+            reg_A = val;
             break;
-        case INSTR_AND_REG:
-            no_logic(instr);
+        }
+        case INSTR_AND_REG: {
+            uint8_t *op_ptr = get_reg_op(instr.op_type);
+            reg_A = reg_A & *op_ptr;
+            calculate_non_carry_flags(reg_A);
+            flag_carry = false;
             break;
-        case INSTR_XOR_REG:
-            no_logic(instr);
+        }
+        case INSTR_XOR_REG: {
+            uint8_t *op_ptr = get_reg_op(instr.op_type);
+            reg_A = reg_A ^ *op_ptr;
+            calculate_non_carry_flags(reg_A);
+            flag_carry = false;
             break;
-        case INSTR_OR_REG:
-            no_logic(instr);
+        }
+        case INSTR_OR_REG: {
+            uint8_t *op_ptr = get_reg_op(instr.op_type);
+            reg_A = reg_A | *op_ptr;
+            calculate_non_carry_flags(reg_A);
+            flag_carry = false;
             break;
-        case INSTR_COMPARE_REG:
-            no_logic(instr);
+        }
+        case INSTR_COMPARE_REG: {
+            uint8_t *op_ptr = get_reg_op(instr.op_type);
+            uint16_t val = ~(uint16_t)*op_ptr + 1 + (uint16_t)reg_A;
+            calculate_non_carry_flags(val & 0xff);
+            flag_carry = (val >> 8) > 0;
+            flag_aux_carry = (~(*op_ptr & 0xf) + 1 + (reg_A & 0xf)) > 0xf;
             break;
+        }
         case INSTR_ADD_IMMEDIATE:
             no_logic(instr);
             break;
