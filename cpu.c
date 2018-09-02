@@ -70,14 +70,26 @@ Instr populate_instr(InstrType type, char *mnemonic, int cycle_count,
     instr.byte_count = byte_count;
 
     instr.op_type = op_type;
-    if (op_type == INSTR_OP_SINGLE_8) {
+    if (op_type == INSTR_OP_REG_B_AND_OP_8 ||
+        op_type == INSTR_OP_REG_C_AND_OP_8 ||
+        op_type == INSTR_OP_REG_D_AND_OP_8 ||
+        op_type == INSTR_OP_REG_E_AND_OP_8 ||
+        op_type == INSTR_OP_REG_H_AND_OP_8 ||
+        op_type == INSTR_OP_REG_L_AND_OP_8 ||
+        op_type == INSTR_OP_REG_A_AND_OP_8 ||
+        op_type == INSTR_OP_MEM_REF_AND_OP_8 ||
+        op_type == INSTR_OP_SINGLE_8) {
         instr.operand_8_1 = memory[pc+1];
     }
     if (op_type == INSTR_OP_DOUBLE_8) {
         instr.operand_8_1 = memory[pc+1];
         instr.operand_8_2 = memory[pc+2];
     }
-    if (op_type == INSTR_OP_16) {
+    if (op_type == INSTR_OP_REG_PAIR_B_AND_OP_16 ||
+        op_type == INSTR_OP_REG_PAIR_D_AND_OP_16 ||
+        op_type == INSTR_OP_REG_PAIR_H_AND_OP_16 ||
+        op_type == INSTR_OP_REG_PAIR_SP_AND_OP_16 ||
+        op_type == INSTR_OP_16) {
         instr.operand_16 = (memory[pc+1] << 8) + memory[pc+2];
     }
 
@@ -144,6 +156,7 @@ Instr populate_instr(InstrType type, char *mnemonic, int cycle_count,
 }
 
 Instr fetch_instr() {
+    printf("MEMORY: %x, %x, %x\n", memory[pc], memory[pc + 1], memory[pc+2]);
     Instr instr;
 
     uint8_t opcode = memory[pc];
@@ -1176,7 +1189,7 @@ uint16_t get_swapped_bytes(uint16_t val) {
 
 void push(uint16_t val) {
     memory[sp - 1] = (val >> 8);
-    memory[sp - 2] = (val & 0xf);
+    memory[sp - 2] = (val & 0xff);
     sp = sp - 2;
 }
 
@@ -1222,9 +1235,28 @@ void exec_instr(Instr instr) {
         case INSTR_DOUBLE_ADD:
             no_logic(instr);
             break;
-        case INSTR_INCREMENT_REG_PAIR:
-            no_logic(instr);
+        case INSTR_INCREMENT_REG_PAIR: {
+            uint16_t val;
+            if (instr.op_type == INSTR_OP_REG_PAIR_B) {
+                val = ((uint16_t)reg_B << 8) | reg_C;
+                val++;
+                reg_B = val >> 8;
+                reg_C = val & 0xff;
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_D) {
+                val = ((uint16_t)reg_D << 8) | reg_E;
+                val++;
+                reg_D = val >> 8;
+                reg_E = val & 0xff;
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_H) {
+                val = ((uint16_t)reg_H << 8) | reg_L;
+                val++;
+                reg_H = val >> 8;
+                reg_L = val & 0xff;
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_SP) {
+                sp++;
+            }
             break;
+        }
         case INSTR_DECREMENT_REG_PAIR:
             no_logic(instr);
             break;
@@ -1265,16 +1297,16 @@ void exec_instr(Instr instr) {
             break;
         case INSTR_LOAD_REG_PAIR_IMMEDIATE:
             if (instr.op_type == INSTR_OP_REG_PAIR_B_AND_OP_16) {
-                reg_B = instr.operand_16 & 0xf;
+                reg_B = instr.operand_16 & 0xff;
                 reg_C = instr.operand_16 >> 8;
             } else if (instr.op_type == INSTR_OP_REG_PAIR_D_AND_OP_16) {
-                reg_D = instr.operand_16 & 0xf;
+                reg_D = instr.operand_16 & 0xff;
                 reg_E = instr.operand_16 >> 8;
             } else if (instr.op_type == INSTR_OP_REG_PAIR_H_AND_OP_16) {
-                reg_H = instr.operand_16 & 0xf;
+                reg_H = instr.operand_16 & 0xff;
                 reg_L = instr.operand_16 >> 8;
             } else if (instr.op_type == INSTR_OP_REG_PAIR_SP_AND_OP_16) {
-                sp = (instr.operand_16 & 0xf) << 8;
+                sp = (instr.operand_16 & 0xff) << 8;
                 sp |= instr.operand_16 >> 8;
             }
             break;

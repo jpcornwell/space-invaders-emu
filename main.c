@@ -31,6 +31,8 @@ int main(int argc, char *argv[]) {
         }
 
         instr = fetch_instr();
+        printf("%04x: %s\n", instr.address, instr.mnemonic);
+        //getchar();
         exec_instr(instr);
         update_display();
     }
