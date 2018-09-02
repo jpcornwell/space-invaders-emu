@@ -37,7 +37,7 @@ void update_display(void) {
     int y_pos = 0;;
     for (int i = 0; i < 7168; i++) {
         uint8_t byte = v_ram[i];
-        while (byte) {
+        for (int j = 0; j < 8; j++) {
             if (byte & 0x01) {
                 pixel.x = x_pos * PIXEL_WIDTH;
                 pixel.y = y_pos * PIXEL_HEIGHT;
@@ -57,4 +57,6 @@ void update_display(void) {
             y_pos++;
         }
     }
+
+    SDL_RenderPresent(renderer);
 }

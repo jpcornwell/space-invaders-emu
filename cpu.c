@@ -1187,6 +1187,27 @@ uint16_t get_swapped_bytes(uint16_t val) {
     return swapped;
 }
 
+uint8_t get_flag_reg() {
+    uint8_t val;
+    val = flag_sign << 7;
+    val |= flag_zero << 6;
+    val |= 0 << 5;
+    val |= flag_aux_carry << 4;
+    val |= 0 << 3;
+    val |= flag_parity << 2;
+    val |= 1 << 1;
+    val |= flag_carry;
+    return val;
+}
+
+void set_flag_reg(uint8_t val) {
+    flag_sign = (val >> 7) & 0x1;
+    flag_zero = (val >> 6) & 0x1;
+    flag_aux_carry = (val >> 4) & 0x1;
+    flag_parity = (val >> 2) & 0x1;
+    flag_carry = val & 0x1;
+}
+
 void push(uint16_t val) {
     memory[sp - 1] = (val >> 8);
     memory[sp - 2] = (val & 0xff);
@@ -1233,7 +1254,35 @@ void exec_instr(Instr instr) {
             no_logic(instr);
             break;
         case INSTR_DOUBLE_ADD:
-            no_logic(instr);
+            if (instr.op_type == INSTR_OP_REG_PAIR_B) {
+                uint32_t op1 = ((uint32_t)reg_B << 8) | reg_C;
+                uint32_t op2 = ((uint32_t)reg_H << 8) | reg_L;
+                uint32_t sum = op1 + op2;
+                flag_carry = sum >> 16;
+                reg_H = (sum >> 8) & 0xff;
+                reg_L = sum & 0xff;
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_D) {
+                uint32_t op1 = ((uint32_t)reg_D << 8) | reg_E;
+                uint32_t op2 = ((uint32_t)reg_H << 8) | reg_L;
+                uint32_t sum = op1 + op2;
+                flag_carry = sum >> 16;
+                reg_H = (sum >> 8) & 0xff;
+                reg_L = sum & 0xff;
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_H) {
+                uint32_t op1 = ((uint32_t)reg_H << 8) | reg_L;
+                uint32_t op2 = ((uint32_t)reg_H << 8) | reg_L;
+                uint32_t sum = op1 + op2;
+                flag_carry = sum >> 16;
+                reg_H = (sum >> 8) & 0xff;
+                reg_L = sum & 0xff;
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_SP) {
+                uint32_t op1 = sp;
+                uint32_t op2 = ((uint32_t)reg_H << 8) | reg_L;
+                uint32_t sum = op1 + op2;
+                flag_carry = sum >> 16;
+                reg_H = (sum >> 8) & 0xff;
+                reg_L = sum & 0xff;
+            }
             break;
         case INSTR_INCREMENT_REG_PAIR: {
             uint16_t val;
@@ -1261,10 +1310,38 @@ void exec_instr(Instr instr) {
             no_logic(instr);
             break;
         case INSTR_POP:
-            no_logic(instr);
+            if (instr.op_type == INSTR_OP_REG_PAIR_B) {
+                uint16_t val = pop();
+                reg_B = val >> 8;
+                reg_C = val & 0xff;
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_D) {
+                uint16_t val = pop();
+                reg_D = val >> 8;
+                reg_E = val & 0xff;
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_H) {
+                uint16_t val = pop();
+                reg_H = val >> 8;
+                reg_L = val & 0xff;
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_PSW) {
+                uint16_t val = pop();
+                reg_A = val >> 8;
+                set_flag_reg(val & 0xff);
+            }
             break;
         case INSTR_PUSH:
-            no_logic(instr);
+            if (instr.op_type == INSTR_OP_REG_PAIR_B) {
+                uint16_t val = ((uint16_t)reg_B << 8) | reg_C;
+                push(val);
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_D) {
+                uint16_t val = ((uint16_t)reg_D << 8) | reg_E;
+                push(val);
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_H) {
+                uint16_t val = ((uint16_t)reg_H << 8) | reg_L;
+                push(val);
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_PSW) {
+                uint16_t val = ((uint16_t)reg_A << 8) | get_flag_reg();
+                push(val);
+            }
             break;
         case INSTR_EXCHANGE_STACK: {
             uint8_t temp;
