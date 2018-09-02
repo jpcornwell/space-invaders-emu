@@ -11,10 +11,10 @@
 #define WINDOW_WIDTH (PIXEL_COUNT_WIDTH * PIXEL_WIDTH)
 #define WINDOW_HEIGHT (PIXEL_COUNT_HEIGHT * PIXEL_HEIGHT)
 
-SDL_Window *window = NULL;
-SDL_Renderer *renderer = NULL;
+static SDL_Window *window = NULL;
+static SDL_Renderer *renderer = NULL;
 
-uint8_t *v_ram;
+static uint8_t *v_ram = NULL;
 
 void init_display(uint8_t *mem) {
     window = SDL_CreateWindow("Space Invaders", SDL_WINDOWPOS_UNDEFINED,

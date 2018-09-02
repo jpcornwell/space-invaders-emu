@@ -7,38 +7,27 @@
 
 #include "cpu.h"
 
-uint16_t pc;
-uint16_t sp;
+static uint16_t pc = 0;
+static uint16_t sp = 0;
 
-uint8_t reg_A;
-uint8_t reg_B;
-uint8_t reg_C;
-uint8_t reg_D;
-uint8_t reg_E;
-uint8_t reg_H;
-uint8_t reg_L;
+static uint8_t reg_A = 0;
+static uint8_t reg_B = 0;
+static uint8_t reg_C = 0;
+static uint8_t reg_D = 0;
+static uint8_t reg_E = 0;
+static uint8_t reg_H = 0;
+static uint8_t reg_L = 0;
 
-bool flag_sign;
-bool flag_zero;
-bool flag_aux_carry;
-bool flag_parity;
-bool flag_carry;
+static bool flag_sign = false;
+static bool flag_zero = false;
+static bool flag_aux_carry = false;
+static bool flag_parity = false;
+static bool flag_carry = false;
 
-uint8_t *memory;
+static uint8_t *memory = NULL;
 
 void init_cpu(uint8_t *mem) {
     memory = mem;
-
-    FILE *fp = fopen("invaders.rom", "rb");
-    
-    if (fp == NULL) {
-        printf("Error opening ROM file\n");
-        exit(1);
-    }
-
-    fread(memory, 1, 65536, fp);
-
-    fclose(fp);
 
     pc = 0;
     sp = 0;

@@ -7,6 +7,22 @@
 #include "cpu.h"
 #include "display.h"
 
+static uint8_t memory[65536] = {0};
+
+void load_memory(char *path) {
+    FILE *fp = fopen(path, "rb");
+    
+    if (fp == NULL) {
+        printf("Error opening ROM file\n");
+        exit(1);
+    }
+
+    memset(memory, 0, sizeof memory);
+    fread(memory, 1, 65536, fp);
+
+    fclose(fp);
+}
+
 int main(int argc, char *argv[]) {
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -18,8 +34,8 @@ int main(int argc, char *argv[]) {
     SDL_Event e;
 
     Instr instr;
-    uint8_t memory[65536];
 
+    load_memory("invaders.rom");
     init_cpu(memory);
     init_display(memory);
 
