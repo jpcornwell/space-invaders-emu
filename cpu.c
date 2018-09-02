@@ -24,10 +24,11 @@ bool flag_aux_carry;
 bool flag_parity;
 bool flag_carry;
 
-// temporarily keep memory in here
-uint8_t memory[65536];
+uint8_t *memory;
 
-void init_cpu() {
+void init_cpu(uint8_t *mem) {
+    memory = mem;
+
     FILE *fp = fopen("invaders.rom", "rb");
     
     if (fp == NULL) {

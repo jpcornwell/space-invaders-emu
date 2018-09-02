@@ -139,7 +139,7 @@ typedef struct Instr {
     InstrOpType move_destination;
 } Instr;
 
-void init_cpu(void);
+void init_cpu(uint8_t *);
 Instr fetch_instr(void);
 void exec_instr(Instr);
 
