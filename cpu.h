@@ -128,7 +128,7 @@ typedef struct Instr {
     InstrType type;
     uint16_t address;
     uint8_t opcode;
-    char mnenomic[5];
+    char mnemonic[5];
     int cycle_count;
     int byte_count;
     InstrOpType op_type;

@@ -58,14 +58,14 @@ void init_cpu(uint8_t *mem) {
     flag_carry = false;
 }
 
-Instr populate_instr(InstrType type, char *mnenomic, int cycle_count,
+Instr populate_instr(InstrType type, char *mnemonic, int cycle_count,
         int byte_count, InstrOpType op_type) {
     Instr instr;
 
     instr.address = pc;
     instr.opcode = memory[pc];
     instr.type = type;
-    strcpy(instr.mnenomic, mnenomic);
+    strcpy(instr.mnemonic, mnemonic);
     instr.cycle_count = cycle_count;
     instr.byte_count = byte_count;
 
@@ -150,7 +150,7 @@ Instr fetch_instr() {
 
     // temporarily fill out some default values
     instr.type = INSTR_NOP;
-    strcpy(instr.mnenomic, "999");
+    strcpy(instr.mnemonic, "999");
     instr.cycle_count = 999;
     instr.byte_count = 999;
     instr.address = pc;
