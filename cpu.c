@@ -1169,8 +1169,8 @@ void calculate_non_carry_flags(uint8_t val) {
 }
 
 uint16_t get_swapped_bytes(uint16_t val) {
-    uint16_t swapped = (val & 0xf0) >> 8;
-    swapped = swapped | ((val & 0x0f) << 8);
+    uint16_t swapped = ((uint16_t)val & 0xff00) >> 8;
+    swapped = swapped | ((val & 0xff) << 8);
     return swapped;
 }
 
