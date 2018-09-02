@@ -47,6 +47,29 @@ void init_cpu(uint8_t *mem) {
     flag_carry = false;
 }
 
+CpuInnards expose_cpu_internals() {
+    CpuInnards cpu;
+
+    cpu.pc = &pc;
+    cpu.sp = &sp;
+
+    cpu.reg_A = &reg_A;
+    cpu.reg_B = &reg_B;
+    cpu.reg_C = &reg_C;
+    cpu.reg_D = &reg_D;
+    cpu.reg_E = &reg_E;
+    cpu.reg_H = &reg_H;
+    cpu.reg_L = &reg_L;
+
+    cpu.flag_sign = &flag_sign;
+    cpu.flag_zero = &flag_zero;
+    cpu.flag_aux_carry = &flag_aux_carry;
+    cpu.flag_parity = &flag_parity;
+    cpu.flag_carry = &flag_carry;
+
+    return cpu;
+}
+
 Instr populate_instr(InstrType type, char *mnemonic, int cycle_count,
         int byte_count, InstrOpType op_type) {
     Instr instr;
@@ -145,7 +168,6 @@ Instr populate_instr(InstrType type, char *mnemonic, int cycle_count,
 }
 
 Instr fetch_instr() {
-    printf("MEMORY: %x, %x, %x\n", memory[pc], memory[pc + 1], memory[pc+2]);
     Instr instr;
 
     uint8_t opcode = memory[pc];
@@ -1198,9 +1220,9 @@ void set_flag_reg(uint8_t val) {
 }
 
 void push(uint16_t val) {
-    memory[sp - 1] = (val >> 8);
-    memory[sp - 2] = (val & 0xff);
-    sp = sp - 2;
+    sp = (sp - 2) & 0xffff;
+    memory[sp + 1] = (val >> 8);
+    memory[sp] = (val & 0xff);
 }
 
 uint16_t pop() {

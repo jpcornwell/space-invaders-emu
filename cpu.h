@@ -139,7 +139,27 @@ typedef struct Instr {
     InstrOpType move_destination;
 } Instr;
 
+typedef struct CpuInnards {
+    uint16_t *pc;
+    uint16_t *sp;
+
+    uint8_t *reg_A;
+    uint8_t *reg_B;
+    uint8_t *reg_C;
+    uint8_t *reg_D;
+    uint8_t *reg_E;
+    uint8_t *reg_H;
+    uint8_t *reg_L;
+
+    bool *flag_sign;
+    bool *flag_zero;
+    bool *flag_aux_carry;
+    bool *flag_parity;
+    bool *flag_carry;
+} CpuInnards;
+
 void init_cpu(uint8_t *);
+CpuInnards expose_cpu_internals(void);
 Instr fetch_instr(void);
 void exec_instr(Instr);
 
