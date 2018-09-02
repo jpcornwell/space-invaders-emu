@@ -28,7 +28,6 @@ void init_display(uint8_t *mem) {
 }
 
 void update_display(void) {
-    printf("Update\n");
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
@@ -38,7 +37,6 @@ void update_display(void) {
     int y_pos = 0;;
     for (int i = 0; i < 7168; i++) {
         uint8_t byte = v_ram[i];
-        printf("val: %d\n", byte);
         while (byte) {
             if (byte & 0x01) {
                 pixel.x = x_pos * PIXEL_WIDTH;
