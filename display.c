@@ -3,8 +3,8 @@
 
 #include <SDL2/SDL.h>
 
-#define PIXEL_COUNT_WIDTH 256
-#define PIXEL_COUNT_HEIGHT 224
+#define PIXEL_COUNT_WIDTH 224
+#define PIXEL_COUNT_HEIGHT 256
 
 #define PIXEL_WIDTH 2
 #define PIXEL_HEIGHT 2
@@ -34,7 +34,7 @@ void update_display(void) {
     SDL_Rect pixel;
 
     int x_pos = 0;
-    int y_pos = 0;;
+    int y_pos = 256;
     for (int i = 0; i < 7168; i++) {
         uint8_t byte = v_ram[i];
         for (int j = 0; j < 8; j++) {
@@ -49,12 +49,12 @@ void update_display(void) {
             }
 
             byte = byte >> 1;
-            x_pos++;
+            y_pos--;
         }
 
-        if (x_pos == 256) {
-            x_pos = 0;
-            y_pos++;
+        if (y_pos == 0) {
+            y_pos = 256;
+            x_pos++;
         }
     }
 
