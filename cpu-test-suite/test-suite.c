@@ -67,6 +67,7 @@ void run_test(char *path) {
 
         // Execute instruction as one normally would do
         instr = fetch_instr();
+        //printf("INSTR: %02x: %s\n", instr.address, instr.mnemonic);
         exec_instr(instr);
 
         if (*(cpu.pc) == 0) {
@@ -78,7 +79,7 @@ void run_test(char *path) {
 
 int main(int argc, char *argv[]) {
     run_test("tests/TST8080.COM");
-    //run_test("tests/CPUTEST.COM");
+    run_test("tests/CPUTEST.COM");
     run_test("tests/8080PRE.COM");
-    //run_test("tests/8080EXM.COM");
+    run_test("tests/8080EXM.COM");
 }

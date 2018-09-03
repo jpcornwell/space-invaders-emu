@@ -209,7 +209,7 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_B_AND_OP_8);
             break;
         case 0x07:
-            instr = populate_instr(INSTR_ROTATE_ACCUMULATOR_LEFT_CARRY, "RLC",
+            instr = populate_instr(INSTR_ROTATE_ACCUMULATOR_LEFT, "RLC",
                                    4, 1, INSTR_OP_NONE);
             break;
         case 0x08:
@@ -240,7 +240,7 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_C_AND_OP_8);
             break;
         case 0x0f:
-            instr = populate_instr(INSTR_ROTATE_ACCUMULATOR_RIGHT_CARRY, "RRC",
+            instr = populate_instr(INSTR_ROTATE_ACCUMULATOR_RIGHT, "RRC",
                                    4, 1, INSTR_OP_NONE);
             break;
         case 0x10:
@@ -271,7 +271,7 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_D_AND_OP_8);
             break;
         case 0x17:
-            instr = populate_instr(INSTR_ROTATE_ACCUMULATOR_LEFT, "RAL",
+            instr = populate_instr(INSTR_ROTATE_ACCUMULATOR_LEFT_CARRY, "RAL",
                                    4, 1, INSTR_OP_NONE);
             break;
         case 0x18:
@@ -302,7 +302,7 @@ Instr fetch_instr() {
                                    INSTR_OP_REG_E_AND_OP_8);
             break;
         case 0x1f:
-            instr = populate_instr(INSTR_ROTATE_ACCUMULATOR_RIGHT, "RAR",
+            instr = populate_instr(INSTR_ROTATE_ACCUMULATOR_RIGHT_CARRY, "RAR",
                                    4, 1, INSTR_OP_NONE);
             break;
         case 0x20:
@@ -1089,7 +1089,7 @@ Instr fetch_instr() {
                                    INSTR_OP_NONE);
             break;
         case 0xf8:
-            instr = populate_instr(INSTR_RETURN_IF_PARITY_EVEN, "RPE", 5, 1,
+            instr = populate_instr(INSTR_RETURN_IF_MINUS, "RPE", 5, 1,
                                    INSTR_OP_NONE);
             break;
         case 0xf9:
@@ -1168,7 +1168,7 @@ uint8_t *get_reg_op(InstrOpType op_type) {
             break;
         case INSTR_OP_MEM_REF:
         case INSTR_OP_MEM_REF_AND_OP_8:
-            return &memory[(reg_H << 8) + reg_L];
+            return &memory[(reg_H << 8) | reg_L];
             break;
         default:
             printf("Error: Operand type not recognized\n");
@@ -1253,16 +1253,16 @@ void exec_instr(Instr instr) {
             no_logic(instr);
             break;
         case INSTR_DISABLE_INTERRUPT:
-            no_logic(instr);
+            //no_logic(instr);
             break;
         case INSTR_ENABLE_INTERRUPT:
-            no_logic(instr);
+            //no_logic(instr);
             break;
         case INSTR_OUTPUT:
-            no_logic(instr);
+            //no_logic(instr);
             break;
         case INSTR_INPUT:
-            no_logic(instr);
+            //no_logic(instr);
             break;
         case INSTR_DOUBLE_ADD:
             if (instr.op_type == INSTR_OP_REG_PAIR_B) {
@@ -1317,9 +1317,28 @@ void exec_instr(Instr instr) {
             }
             break;
         }
-        case INSTR_DECREMENT_REG_PAIR:
-            no_logic(instr);
+        case INSTR_DECREMENT_REG_PAIR: {
+            uint16_t val;
+            if (instr.op_type == INSTR_OP_REG_PAIR_B) {
+                val = ((uint16_t)reg_B << 8) | reg_C;
+                val--;
+                reg_B = val >> 8;
+                reg_C = val & 0xff;
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_D) {
+                val = ((uint16_t)reg_D << 8) | reg_E;
+                val--;
+                reg_D = val >> 8;
+                reg_E = val & 0xff;
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_H) {
+                val = ((uint16_t)reg_H << 8) | reg_L;
+                val--;
+                reg_H = val >> 8;
+                reg_L = val & 0xff;
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_SP) {
+                sp--;
+            }
             break;
+        }
         case INSTR_POP:
             if (instr.op_type == INSTR_OP_REG_PAIR_B) {
                 uint16_t val = pop();
@@ -1377,12 +1396,18 @@ void exec_instr(Instr instr) {
             reg_E = temp;
             break;
         }
-        case INSTR_LOAD_HL_DIRECT:
-            no_logic(instr);
+        case INSTR_LOAD_HL_DIRECT: {
+            uint16_t address = get_swapped_bytes(instr.operand_16);
+            reg_H = memory[address + 1];
+            reg_L = memory[address];
             break;
-        case INSTR_STORE_HL_DIRECT:
-            no_logic(instr);
+        }
+        case INSTR_STORE_HL_DIRECT: {
+            uint16_t address = get_swapped_bytes(instr.operand_16);
+            memory[address] = reg_L;
+            memory[address + 1] = reg_H;
             break;
+        }
         case INSTR_LOAD_REG_PAIR_IMMEDIATE:
             if (instr.op_type == INSTR_OP_REG_PAIR_B_AND_OP_16) {
                 reg_B = instr.operand_16 & 0xff;
@@ -1399,18 +1424,20 @@ void exec_instr(Instr instr) {
             }
             break;
         case INSTR_STORE_ACCUMULATOR: {
-            if (instr.op_type == INSTR_OP_REG_B) {
+            if (instr.op_type == INSTR_OP_REG_PAIR_B) {
                 memory[((uint16_t)reg_B << 8) | reg_C] = reg_A;
-            } else if (instr.op_type == INSTR_OP_REG_D) {
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_D) {
                 memory[((uint16_t)reg_D << 8) | reg_E] = reg_A;
             }
             break;
         }
         case INSTR_LOAD_ACCUMULATOR: {
-            if (instr.op_type == INSTR_OP_REG_B) {
-                reg_A = memory[((uint16_t)reg_B << 8) | reg_C];
-            } else if (instr.op_type == INSTR_OP_REG_D) {
-                reg_A = memory[((uint16_t)reg_D << 8) | reg_E];
+            if (instr.op_type == INSTR_OP_REG_PAIR_B) {
+                uint16_t address = ((uint16_t)reg_B << 8) | reg_C;
+                reg_A = memory[address];
+            } else if (instr.op_type == INSTR_OP_REG_PAIR_D) {
+                uint16_t address = ((uint16_t)reg_D << 8) | reg_E;
+                reg_A = memory[address];
             }
             break;
         }
@@ -1435,7 +1462,7 @@ void exec_instr(Instr instr) {
             uint8_t *op_ptr = get_reg_op(instr.op_type);
             uint8_t val = *op_ptr + 1;
             calculate_non_carry_flags(val);
-            flag_aux_carry = ((*op_ptr & 0xf) + 1) > 0xf;
+            flag_aux_carry = (val & 0x0f) == 0;
             *op_ptr = val;
             break;
         }
@@ -1443,7 +1470,7 @@ void exec_instr(Instr instr) {
             uint8_t *op_ptr = get_reg_op(instr.op_type);
             uint8_t val = *op_ptr - 1;
             calculate_non_carry_flags(val);
-            flag_aux_carry = ((*op_ptr & 0xf) - 1) > 0xf;
+            flag_aux_carry = !((val & 0x0f) == 0x0f);
             *op_ptr = val;
             break;
         }
@@ -1471,9 +1498,19 @@ void exec_instr(Instr instr) {
             reg_A = reg_A | (old_carry ? 0x80 : 0x00);
             break;
         }
-        case INSTR_DECIMAL_ADJUST_ACCUMULATOR:
-            no_logic(instr);
+        case INSTR_DECIMAL_ADJUST_ACCUMULATOR: {
+            uint8_t low = reg_A & 0xf;
+            if ((low > 9) || flag_aux_carry == true) {
+                reg_A += 0x6;
+                flag_aux_carry = (low + 6) > 0xf;
+            }
+            uint8_t high = (reg_A & 0xf0) >> 4;
+            if ((high > 9) || flag_carry == true) {
+                reg_A += 0x60;
+                flag_carry = (high + 6) > 0xf;
+            }
             break;
+        }
         case INSTR_COMPLEMENT_ACCUMULATOR:
             reg_A = ~reg_A;
             break;
@@ -1671,8 +1708,8 @@ void exec_instr(Instr instr) {
         }
         case INSTR_SUBTRACT_REG_WITH_BORROW: {
             uint8_t *op_ptr = get_reg_op(instr.op_type);
-            uint16_t val = ~(uint16_t)*op_ptr + 1 + (uint16_t)reg_A 
-                           + flag_carry;
+            uint16_t val = ~((uint16_t)*op_ptr + flag_carry) + 1 
+                           + (uint16_t)reg_A;
             calculate_non_carry_flags(val & 0xff);
             flag_aux_carry = (~(((*op_ptr) + flag_carry) & 0xf) + 1 
                               + (reg_A & 0xf)) > 0xf;
@@ -1737,8 +1774,8 @@ void exec_instr(Instr instr) {
             break;
         }
         case INSTR_SUBTRACT_IMMEDIATE_WITH_BORROW: {
-            uint16_t val = ~(uint16_t)instr.operand_8_1 + 1 + (uint16_t)reg_A 
-                           + flag_carry;
+            uint16_t val = ~((uint16_t)instr.operand_8_1 + flag_carry) + 1 
+                           + (uint16_t)reg_A;
             calculate_non_carry_flags(val & 0xff);
             flag_aux_carry = (~((instr.operand_8_1 + flag_carry) & 0xf) + 1 
                               + (reg_A & 0xf)) > 0xf;
