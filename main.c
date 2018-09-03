@@ -46,9 +46,13 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        instr = fetch_instr();
-        printf("%04x: %s\n", instr.address, instr.mnemonic);
-        exec_instr(instr);
+        // Temporarily use this loop to speed up emulation 
+        // (this reduces the number of display updates)
+        for (int i = 0; i < 30; i++) {
+            instr = fetch_instr();
+            printf("%04x: %s\n", instr.address, instr.mnemonic);
+            exec_instr(instr);
+        }
         update_display();
     }
 }
