@@ -24,7 +24,12 @@ static bool flag_aux_carry = false;
 static bool flag_parity = false;
 static bool flag_carry = false;
 
+static bool is_halted = false;
+static bool is_interruptible = true;
+
 static uint8_t *memory = NULL;
+
+static uint8_t io_ports[256] = {0};
 
 void init_cpu(uint8_t *mem) {
     memory = mem;
@@ -45,6 +50,11 @@ void init_cpu(uint8_t *mem) {
     flag_aux_carry = false;
     flag_parity = false;
     flag_carry = false;
+
+    is_halted = false;
+    is_interruptible = true;
+
+    memset(io_ports, 0, 256);
 }
 
 CpuInnards expose_cpu_internals() {
@@ -66,6 +76,11 @@ CpuInnards expose_cpu_internals() {
     cpu.flag_aux_carry = &flag_aux_carry;
     cpu.flag_parity = &flag_parity;
     cpu.flag_carry = &flag_carry;
+
+    cpu.is_halted = &is_halted;
+    cpu.is_interruptible = &is_interruptible;
+
+    cpu.io_ports = &io_ports[0];
 
     return cpu;
 }
@@ -1243,6 +1258,9 @@ void return_sub() {
 }
 
 void exec_instr(Instr instr) {
+    if (is_halted) {
+        return;
+    }
 
     pc += instr.byte_count;
 
@@ -1250,19 +1268,19 @@ void exec_instr(Instr instr) {
         case INSTR_NOP:
             break;
         case INSTR_HALT:
-            no_logic(instr);
+            is_halted = true;
             break;
         case INSTR_DISABLE_INTERRUPT:
-            //no_logic(instr);
+            is_interruptible = false;
             break;
         case INSTR_ENABLE_INTERRUPT:
-            //no_logic(instr);
+            is_interruptible = true;
             break;
         case INSTR_OUTPUT:
-            //no_logic(instr);
+            io_ports[instr.operand_8_1] = reg_A;
             break;
         case INSTR_INPUT:
-            //no_logic(instr);
+            reg_A = io_ports[instr.operand_8_1];
             break;
         case INSTR_DOUBLE_ADD:
             if (instr.op_type == INSTR_OP_REG_PAIR_B) {

@@ -156,6 +156,11 @@ typedef struct CpuInnards {
     bool *flag_aux_carry;
     bool *flag_parity;
     bool *flag_carry;
+
+    bool *is_halted;
+    bool *is_interruptible;
+
+    uint8_t *io_ports;
 } CpuInnards;
 
 void init_cpu(uint8_t *);
