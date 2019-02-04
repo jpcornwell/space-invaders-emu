@@ -1871,6 +1871,9 @@ void process_interrupt_signal(IntSignal signal) {
             break;
     }
 
+    // TODO: This is a hack. Should be done better.
+    // Decrement PC by the byte count of the RESTART opcode
+    // because exec_instr is going to increment by that amount
     pc -= instr.byte_count;
     exec_instr(instr);
 }

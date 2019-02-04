@@ -23,10 +23,12 @@ void load_memory(char *path) {
     fclose(fp);
 }
 
+// Generate this interrupt when screen is half way drawn
 void half_draw_interrupt(void) {
     process_interrupt_signal(INT_SIGNAL_1);
 }
 
+// Generate this interrupt when screen is fully drawn
 void full_draw_interrupt(void) {
     process_interrupt_signal(INT_SIGNAL_2);
 }
