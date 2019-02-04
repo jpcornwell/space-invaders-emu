@@ -43,6 +43,10 @@ int main(int argc, char *argv[]) {
     bool quit = false;
     SDL_Event e;
 
+    Uint32 start_tick_time;
+    Uint32 elapsed_tick_time;
+    bool interrupt_flip_flop = false;
+
     Instr instr;
 
     load_memory("invaders.rom");
@@ -50,23 +54,37 @@ int main(int argc, char *argv[]) {
     init_display(memory);
 
     while (!quit) {
-        // TODO: put in place an actual timing mechanism to keep things in sync
+        // TODO: improve timing mechanism
+        // Currently hard coded to run loop every 16 ms
+        // Runs 32,000 instructions in this time
+        // Executes one of the two interrupts
+        // Updates display every other loop
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
         }
 
-        half_draw_interrupt();
-        // Temporarily use this loop to speed up emulation 
-        // (this reduces the number of display updates)
-        for (int i = 0; i < 90; i++) {
+        start_tick_time = SDL_GetTicks();
+
+        for (int i = 0; i < 32000; i++) {
             instr = fetch_instr();
-            printf("%04x: %s\n", instr.address, instr.mnemonic);
             exec_instr(instr);
         }
-        full_draw_interrupt();
-        update_display();
+
+        interrupt_flip_flop = !interrupt_flip_flop;
+        
+        if (interrupt_flip_flop) {
+            half_draw_interrupt();
+        } else {
+            update_display();
+            full_draw_interrupt();
+        }
+
+        elapsed_tick_time = SDL_GetTicks() - start_tick_time;
+        if (elapsed_tick_time < 16) {
+            SDL_Delay(16 - elapsed_tick_time);
+        }
         // TODO: handle inputs
         // TODO: handle outputs
     }
