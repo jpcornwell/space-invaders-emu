@@ -124,6 +124,17 @@ typedef enum InstrOpType {
     INSTR_OP_MEM_REF_AND_OP_8
 } InstrOpType;
 
+typedef enum IntSignal {
+    INT_SIGNAL_0,
+    INT_SIGNAL_1,
+    INT_SIGNAL_2,
+    INT_SIGNAL_3,
+    INT_SIGNAL_4,
+    INT_SIGNAL_5,
+    INT_SIGNAL_6,
+    INT_SIGNAL_7
+} IntSignal;
+
 typedef struct Instr {
     InstrType type;
     uint16_t address;
@@ -167,5 +178,7 @@ void init_cpu(uint8_t *);
 CpuInnards expose_cpu_internals(void);
 Instr fetch_instr(void);
 void exec_instr(Instr);
+void process_interrupt_signal(IntSignal);
+
 
 #endif

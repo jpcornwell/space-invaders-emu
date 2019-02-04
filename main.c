@@ -23,6 +23,14 @@ void load_memory(char *path) {
     fclose(fp);
 }
 
+void half_draw_interrupt(void) {
+    process_interrupt_signal(INT_SIGNAL_1);
+}
+
+void full_draw_interrupt(void) {
+    process_interrupt_signal(INT_SIGNAL_2);
+}
+
 int main(int argc, char *argv[]) {
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -40,19 +48,24 @@ int main(int argc, char *argv[]) {
     init_display(memory);
 
     while (!quit) {
+        // TODO: put in place an actual timing mechanism to keep things in sync
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
         }
 
+        half_draw_interrupt();
         // Temporarily use this loop to speed up emulation 
         // (this reduces the number of display updates)
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 90; i++) {
             instr = fetch_instr();
             printf("%04x: %s\n", instr.address, instr.mnemonic);
             exec_instr(instr);
         }
+        full_draw_interrupt();
         update_display();
+        // TODO: handle inputs
+        // TODO: handle outputs
     }
 }

@@ -1826,3 +1826,52 @@ void exec_instr(Instr instr) {
     }
 }
 
+void process_interrupt_signal(IntSignal signal) {
+    Instr instr;
+
+    if (!is_interruptible) {
+        return;
+    }
+
+    is_halted = false;
+    is_interruptible = false;
+
+    switch (signal) {
+        case INT_SIGNAL_0:
+            instr = populate_instr(INSTR_RESTART_0, "RST", 11, 1,
+                                   INSTR_OP_NONE);
+            break;
+        case INT_SIGNAL_1:
+            instr = populate_instr(INSTR_RESTART_1, "RST", 11, 1,
+                                   INSTR_OP_NONE);
+            break;
+        case INT_SIGNAL_2:
+            instr = populate_instr(INSTR_RESTART_2, "RST", 11, 1,
+                                   INSTR_OP_NONE);
+            break;
+        case INT_SIGNAL_3:
+            instr = populate_instr(INSTR_RESTART_3, "RST", 11, 1,
+                                   INSTR_OP_NONE);
+            break;
+        case INT_SIGNAL_4:
+            instr = populate_instr(INSTR_RESTART_4, "RST", 11, 1,
+                                   INSTR_OP_NONE);
+            break;
+        case INT_SIGNAL_5:
+            instr = populate_instr(INSTR_RESTART_5, "RST", 11, 1,
+                                   INSTR_OP_NONE);
+            break;
+        case INT_SIGNAL_6:
+            instr = populate_instr(INSTR_RESTART_6, "RST", 11, 1,
+                                   INSTR_OP_NONE);
+            break;
+        case INT_SIGNAL_7:
+            instr = populate_instr(INSTR_RESTART_7, "RST", 11, 1,
+                                   INSTR_OP_NONE);
+            break;
+    }
+
+    pc -= instr.byte_count;
+    exec_instr(instr);
+}
+
