@@ -29,7 +29,8 @@ static bool is_interruptible = true;
 
 static uint8_t *memory = NULL;
 
-static uint8_t io_ports[256] = {0};
+static uint8_t input_ports[256] = {0};
+static uint8_t output_ports[256] = {0};
 
 void init_cpu(uint8_t *mem) {
     memory = mem;
@@ -54,7 +55,8 @@ void init_cpu(uint8_t *mem) {
     is_halted = false;
     is_interruptible = true;
 
-    memset(io_ports, 0, 256);
+    memset(input_ports, 0, 256);
+    memset(output_ports, 0, 256);
 }
 
 CpuInnards expose_cpu_internals() {
@@ -80,7 +82,8 @@ CpuInnards expose_cpu_internals() {
     cpu.is_halted = &is_halted;
     cpu.is_interruptible = &is_interruptible;
 
-    cpu.io_ports = &io_ports[0];
+    cpu.input_ports = &input_ports[0];
+    cpu.output_ports = &output_ports[0];
 
     return cpu;
 }
@@ -1277,10 +1280,10 @@ void exec_instr(Instr instr) {
             is_interruptible = true;
             break;
         case INSTR_OUTPUT:
-            io_ports[instr.operand_8_1] = reg_A;
+            output_ports[instr.operand_8_1] = reg_A;
             break;
         case INSTR_INPUT:
-            reg_A = io_ports[instr.operand_8_1];
+            reg_A = input_ports[instr.operand_8_1];
             break;
         case INSTR_DOUBLE_ADD:
             if (instr.op_type == INSTR_OP_REG_PAIR_B) {

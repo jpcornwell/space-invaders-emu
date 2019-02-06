@@ -171,7 +171,8 @@ typedef struct CpuInnards {
     bool *is_halted;
     bool *is_interruptible;
 
-    uint8_t *io_ports;
+    uint8_t *input_ports;
+    uint8_t *output_ports;
 } CpuInnards;
 
 void init_cpu(uint8_t *);

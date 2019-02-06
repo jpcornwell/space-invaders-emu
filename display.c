@@ -27,6 +27,7 @@ void init_display(uint8_t *mem) {
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 }
 
+// TODO: Don't forget to add colors
 void update_display(void) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
