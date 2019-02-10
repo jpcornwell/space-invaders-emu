@@ -1520,16 +1520,22 @@ void exec_instr(Instr instr) {
             break;
         }
         case INSTR_DECIMAL_ADJUST_ACCUMULATOR: {
-            uint8_t low = reg_A & 0xf;
-            if ((low > 9) || flag_aux_carry == true) {
-                reg_A += 0x6;
-                flag_aux_carry = (low + 6) > 0xf;
+            bool temp_flag_carry = flag_carry;
+            uint8_t low = reg_A & 0x0f;
+            uint8_t high = reg_A >> 4;
+
+            if ((low > 9) || flag_aux_carry) {
+                reg_A += 0x06;
+                flag_aux_carry = (low + 6) > 0x0f;
             }
-            uint8_t high = (reg_A & 0xf0) >> 4;
-            if ((high > 9) || flag_carry == true) {
+
+            if ((high > 9) || flag_carry || (high == 9 && low > 9)) {
                 reg_A += 0x60;
-                flag_carry = (high + 6) > 0xf;
+                temp_flag_carry = true;
             }
+
+            calculate_non_carry_flags(reg_A);
+            flag_carry = temp_flag_carry;
             break;
         }
         case INSTR_COMPLEMENT_ACCUMULATOR:
@@ -1723,7 +1729,7 @@ void exec_instr(Instr instr) {
             uint16_t val = ~(uint16_t)*op_ptr + 1 + (uint16_t)reg_A;
             calculate_non_carry_flags(val & 0xff);
             flag_carry = (val >> 8) > 0;
-            flag_aux_carry = (~(*op_ptr & 0xf) + 1 + (reg_A & 0xf)) > 0xf;
+            flag_aux_carry = ~(reg_A ^ val ^ *op_ptr) & 0x10;
             reg_A = val;
             break;
         }
@@ -1732,14 +1738,14 @@ void exec_instr(Instr instr) {
             uint16_t val = ~((uint16_t)*op_ptr + flag_carry) + 1 
                            + (uint16_t)reg_A;
             calculate_non_carry_flags(val & 0xff);
-            flag_aux_carry = (~(((*op_ptr) + flag_carry) & 0xf) + 1 
-                              + (reg_A & 0xf)) > 0xf;
+            flag_aux_carry = ~(reg_A ^ val ^ *op_ptr) & 0x10;
             flag_carry = (val >> 8) > 0;
             reg_A = val;
             break;
         }
         case INSTR_AND_REG: {
             uint8_t *op_ptr = get_reg_op(instr.op_type);
+            flag_aux_carry = ((reg_A | *op_ptr) & 0x08) != 0;
             reg_A = reg_A & *op_ptr;
             calculate_non_carry_flags(reg_A);
             flag_carry = false;
@@ -1750,6 +1756,7 @@ void exec_instr(Instr instr) {
             reg_A = reg_A ^ *op_ptr;
             calculate_non_carry_flags(reg_A);
             flag_carry = false;
+            flag_aux_carry = false;
             break;
         }
         case INSTR_OR_REG: {
@@ -1757,6 +1764,7 @@ void exec_instr(Instr instr) {
             reg_A = reg_A | *op_ptr;
             calculate_non_carry_flags(reg_A);
             flag_carry = false;
+            flag_aux_carry = false;
             break;
         }
         case INSTR_COMPARE_REG: {
@@ -1764,7 +1772,7 @@ void exec_instr(Instr instr) {
             uint16_t val = ~(uint16_t)*op_ptr + 1 + (uint16_t)reg_A;
             calculate_non_carry_flags(val & 0xff);
             flag_carry = (val >> 8) > 0;
-            flag_aux_carry = (~(*op_ptr & 0xf) + 1 + (reg_A & 0xf)) > 0xf;
+            flag_aux_carry = ~(reg_A ^ val ^ *op_ptr) & 0x10;
             break;
         }
         case INSTR_ADD_IMMEDIATE: {
@@ -1789,8 +1797,7 @@ void exec_instr(Instr instr) {
             uint16_t val = ~(uint16_t)instr.operand_8_1 + 1 + (uint16_t)reg_A;
             calculate_non_carry_flags(val & 0xff);
             flag_carry = (val >> 8) > 0;
-            flag_aux_carry = (~(instr.operand_8_1 & 0xf) + 1 
-                              + (reg_A & 0xf)) > 0xf;
+            flag_aux_carry = ~(reg_A ^ val ^ instr.operand_8_1) & 0x10;
             reg_A = val;
             break;
         }
@@ -1798,13 +1805,13 @@ void exec_instr(Instr instr) {
             uint16_t val = ~((uint16_t)instr.operand_8_1 + flag_carry) + 1 
                            + (uint16_t)reg_A;
             calculate_non_carry_flags(val & 0xff);
-            flag_aux_carry = (~((instr.operand_8_1 + flag_carry) & 0xf) + 1 
-                              + (reg_A & 0xf)) > 0xf;
+            flag_aux_carry = ~(reg_A ^ val ^ instr.operand_8_1) & 0x10;
             flag_carry = (val >> 8) > 0;
             reg_A = val;
             break;
         }
         case INSTR_AND_IMMEDIATE:
+            flag_aux_carry = ((reg_A | instr.operand_8_1) & 0x08) != 0;
             reg_A = reg_A & instr.operand_8_1;
             calculate_non_carry_flags(reg_A);
             flag_carry = false;
@@ -1813,17 +1820,19 @@ void exec_instr(Instr instr) {
             reg_A = reg_A ^ instr.operand_8_1;
             calculate_non_carry_flags(reg_A);
             flag_carry = false;
+            flag_aux_carry = false;
             break;
         case INSTR_OR_IMMEDIATE:
             reg_A = reg_A | instr.operand_8_1;
             calculate_non_carry_flags(reg_A);
             flag_carry = false;
+            flag_aux_carry = false;
             break;
         case INSTR_COMPARE_IMMEDIATE: {
             uint16_t val = ~(uint16_t)instr.operand_8_1 + 1 + (uint16_t)reg_A;
             calculate_non_carry_flags(val & 0xff);
             flag_carry = (val >> 8) > 0;
-            flag_aux_carry = (~(instr.operand_8_1 & 0xf) + 1 + (reg_A & 0xf)) > 0xf;
+            flag_aux_carry = ~(reg_A ^ val ^instr.operand_8_1) & 0x10;
             break;
         }
     }
