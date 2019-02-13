@@ -1148,12 +1148,6 @@ Instr fetch_instr() {
     return instr;
 }
 
-void no_logic(Instr instr) {
-    printf("Instruction logic not implemented.\nOpcode: 0x%02x\n",
-            instr.opcode);
-    exit(0);
-}
-
 uint8_t *get_reg_op(InstrOpType op_type) {
     switch (op_type) {
         case INSTR_OP_REG_B:
@@ -1888,5 +1882,13 @@ void process_interrupt_signal(IntSignal signal) {
     // because exec_instr is going to increment by that amount
     pc -= instr.byte_count;
     exec_instr(instr);
+}
+
+uint8_t read_port(uint8_t id) {
+    return output_ports[id];
+}
+
+void write_port(uint8_t id, uint8_t value) {
+    input_ports[id] = value;
 }
 

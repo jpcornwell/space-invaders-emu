@@ -33,6 +33,18 @@ void full_draw_interrupt(void) {
     process_interrupt_signal(INT_SIGNAL_2);
 }
 
+void process_shift_register() {
+    static uint16_t reg_shift = 0;
+    uint8_t in = read_port(4);
+    uint8_t offset = read_port(2) & 0x07;
+    uint8_t out = 0;
+
+    reg_shift = (reg_shift >> 8) | ((uint16_t)in << 8);
+    out = (reg_shift >> (8 - offset)) & 0xff;
+
+    write_port(3, out);
+}
+
 int main(int argc, char *argv[]) {
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -72,6 +84,7 @@ int main(int argc, char *argv[]) {
         for (int i = 0; i < 32000; i++) {
             instr = fetch_instr();
             exec_instr(instr);
+            process_shift_register();
         }
 
         interrupt_flip_flop = !interrupt_flip_flop;
