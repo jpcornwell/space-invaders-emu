@@ -45,6 +45,28 @@ void process_shift_register() {
     write_port(3, out);
 }
 
+void set_dip_switches() {
+    // bit 0 = DIP3
+    // bit 1 = DIP5
+    // bits 1 & 0
+    //   00 = 3 ships
+    //   01 = 4 ships
+    //   10 = 5 ships
+    //   11 = 6 ships
+    write_port_bit(2, 0, 1);
+    write_port_bit(2, 1, 1);
+
+    // bit 3 = DIP6
+    // 0 = extra ship at 1500
+    // 1 = extra ship at 1000
+    write_port_bit(2, 3, 1);
+
+    // bit 7 = DIP7
+    // 0 = display coin info on demo screen
+    // 1 = don't display coin info on demo screen
+    write_port_bit(2, 7, 0);
+}
+
 int main(int argc, char *argv[]) {
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -64,6 +86,7 @@ int main(int argc, char *argv[]) {
     load_memory("invaders.rom");
     init_cpu(memory);
     init_display(memory);
+    set_dip_switches();
 
     while (!quit) {
         // TODO: improve timing mechanism

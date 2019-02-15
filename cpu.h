@@ -182,5 +182,6 @@ void exec_instr(Instr);
 void process_interrupt_signal(IntSignal);
 uint8_t read_port(uint8_t);
 void write_port(uint8_t, uint8_t);
+void write_port_bit(uint8_t, uint8_t, uint8_t);
 
 #endif

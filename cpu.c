@@ -1892,3 +1892,7 @@ void write_port(uint8_t id, uint8_t value) {
     input_ports[id] = value;
 }
 
+void write_port_bit(uint8_t id, uint8_t bit_n, uint8_t value) {
+    input_ports[id] ^= (-value ^ input_ports[id]) & (1UL << bit_n);
+}
+
