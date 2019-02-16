@@ -178,7 +178,7 @@ typedef struct CpuInnards {
 void init_cpu(uint8_t *);
 CpuInnards expose_cpu_internals(void);
 Instr fetch_instr(void);
-void exec_instr(Instr);
+int exec_instr(Instr);
 void process_interrupt_signal(IntSignal);
 uint8_t read_port(uint8_t);
 void write_port(uint8_t, uint8_t);

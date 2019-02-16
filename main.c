@@ -102,11 +102,10 @@ int main(int argc, char *argv[]) {
 
         start_tick_time = SDL_GetTicks();
 
-        // TODO: Improve timing by actually taking into account cycles per
-        // instruction
-        for (int i = 0; i < 32000; i++) {
+        int cycle_count = 0;
+        while (cycle_count < 32000) {
             instr = fetch_instr();
-            exec_instr(instr);
+            cycle_count += exec_instr(instr);
             process_shift_register();
         }
 

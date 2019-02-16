@@ -1254,9 +1254,9 @@ void return_sub() {
     pc = pop();
 }
 
-void exec_instr(Instr instr) {
+int exec_instr(Instr instr) {
     if (is_halted) {
-        return;
+        return 0;
     }
 
     pc += instr.byte_count;
@@ -1830,6 +1830,8 @@ void exec_instr(Instr instr) {
             break;
         }
     }
+
+    return instr.cycle_count;
 }
 
 void process_interrupt_signal(IntSignal signal) {
