@@ -67,6 +67,71 @@ void set_dip_switches() {
     write_port_bit(2, 7, 0);
 }
 
+void handle_inputs() {
+    SDL_PumpEvents();
+    const Uint8 *state = SDL_GetKeyboardState(NULL);
+
+    // CREDIT (1 if deposited)
+    // Port 1 Bit 0
+    if (state[SDL_SCANCODE_RETURN]) {
+        write_port_bit(1, 0, 1);
+    } else {
+        write_port_bit(1, 0, 0);
+    }
+
+    // 1P Start (1 if pressed)
+    // Port 1 Bit 2
+    if (state[SDL_SCANCODE_1]) {
+        write_port_bit(1, 2, 1);
+    } else {
+        write_port_bit(1, 2, 0);
+    }
+
+    // 2P Start (1 if pressed)
+    // Port 1 Bit 1
+    if (state[SDL_SCANCODE_2]) {
+        write_port_bit(1, 1, 1);
+    } else {
+        write_port_bit(1, 1, 0);
+    }
+
+    // 1P Fire (1 if pressed)
+    // Port 1 Bit 4
+    // 2P Fire (1 if pressed)
+    // Port 2 Bit 4
+    if (state[SDL_SCANCODE_SPACE]) {
+        write_port_bit(1, 4, 1);
+        write_port_bit(2, 4, 1);
+    } else {
+        write_port_bit(1, 4, 0);
+        write_port_bit(2, 4, 0);
+    }
+
+    // 1P Left (1 if pressed)
+    // Port 1 Bit 5
+    // 2P Left (1 if pressed)
+    // Port 2 Bit 5
+    if (state[SDL_SCANCODE_LEFT]) {
+        write_port_bit(1, 5, 1);
+        write_port_bit(2, 5, 1);
+    } else {
+        write_port_bit(1, 5, 0);
+        write_port_bit(2, 5, 0);
+    }
+
+    // 1P Right (1 if pressed)
+    // Port 1 Bit 6
+    // 2P Right (1 if pressed)
+    // Port 2 Bit 6
+    if (state[SDL_SCANCODE_RIGHT]) {
+        write_port_bit(1, 6, 1);
+        write_port_bit(2, 6, 1);
+    } else {
+        write_port_bit(1, 6, 0);
+        write_port_bit(2, 6, 0);
+    }
+}
+
 int main(int argc, char *argv[]) {
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -122,7 +187,7 @@ int main(int argc, char *argv[]) {
         if (elapsed_tick_time < 16) {
             SDL_Delay(16 - elapsed_tick_time);
         }
-        // TODO: handle inputs
+        handle_inputs();
         // TODO: handle outputs
     }
 }
