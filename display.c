@@ -11,6 +11,14 @@
 #define WINDOW_WIDTH (PIXEL_COUNT_WIDTH * PIXEL_WIDTH)
 #define WINDOW_HEIGHT (PIXEL_COUNT_HEIGHT * PIXEL_HEIGHT)
 
+#define GREEN   0, 255,   0
+#define RED   255,   0,   0
+#define WHITE 255, 255, 255
+
+#define GREEN_BOUNDARY       184
+#define RED_BOUNDARY_TOP      33
+#define RED_BOUNDARY_BOTTOM   55
+
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
 
@@ -27,7 +35,6 @@ void init_display(uint8_t *mem) {
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 }
 
-// TODO: Don't forget to add colors
 void update_display(void) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
@@ -45,7 +52,15 @@ void update_display(void) {
                 pixel.w = PIXEL_WIDTH;
                 pixel.h = PIXEL_HEIGHT;
 
-                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+                if (y_pos > GREEN_BOUNDARY) {
+                    SDL_SetRenderDrawColor(renderer, GREEN, 255);
+                } else if (y_pos > RED_BOUNDARY_TOP &&
+                           y_pos < RED_BOUNDARY_BOTTOM) {
+                    SDL_SetRenderDrawColor(renderer, RED, 255);
+                } else {
+                    SDL_SetRenderDrawColor(renderer, WHITE, 255);
+                }
+
                 SDL_RenderFillRect(renderer, &pixel);
             }
 
