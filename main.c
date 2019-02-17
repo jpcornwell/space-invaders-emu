@@ -155,8 +155,8 @@ int main(int argc, char *argv[]) {
 
     while (!quit) {
         // TODO: improve timing mechanism
-        // Currently hard coded to run loop every 16 ms
-        // Runs 32,000 instructions in this time
+        // Currently hard coded to run loop every 8 ms
+        // Runs 16,000 cycles in this time
         // Executes one of the two interrupts
         // Updates display every other loop
         while (SDL_PollEvent(&e) != 0) {
@@ -168,7 +168,7 @@ int main(int argc, char *argv[]) {
         start_tick_time = SDL_GetTicks();
 
         int cycle_count = 0;
-        while (cycle_count < 32000) {
+        while (cycle_count < 16000) {
             instr = fetch_instr();
             cycle_count += exec_instr(instr);
             process_shift_register();
@@ -184,8 +184,8 @@ int main(int argc, char *argv[]) {
         }
 
         elapsed_tick_time = SDL_GetTicks() - start_tick_time;
-        if (elapsed_tick_time < 16) {
-            SDL_Delay(16 - elapsed_tick_time);
+        if (elapsed_tick_time < 8) {
+            SDL_Delay(8 - elapsed_tick_time);
         }
         handle_inputs();
         // TODO: handle outputs
