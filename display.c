@@ -1,7 +1,7 @@
 
 #include <stdint.h>
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #define PIXEL_COUNT_WIDTH 224
 #define PIXEL_COUNT_HEIGHT 256

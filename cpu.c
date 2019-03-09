@@ -1890,6 +1890,10 @@ uint8_t read_port(uint8_t id) {
     return output_ports[id];
 }
 
+bool read_port_bit(uint8_t id, uint8_t bit_n) {
+    return output_ports[id] & (0x01 << bit_n);
+}
+
 void write_port(uint8_t id, uint8_t value) {
     input_ports[id] = value;
 }

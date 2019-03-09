@@ -1,5 +1,5 @@
 
-#ifndef DISPLAY
+#ifndef DISPLAY_H
 #define DISPLAY_H
 
 #include <stdint.h>

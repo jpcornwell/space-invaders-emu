@@ -7,6 +7,7 @@
 
 #include "cpu.h"
 #include "display.h"
+#include "audio.h"
 
 static uint8_t memory[65536] = {0};
 
@@ -44,6 +45,65 @@ void process_shift_register() {
     out = (reg_shift >> (8 - offset)) & 0xff;
 
     write_port(3, out);
+}
+
+void process_sound() {
+    static bool previous_values[9] = {0};
+    bool val;
+
+    val = read_port_bit(3, 1);
+    if (val && !previous_values[0]) {
+        play_sound(SOUND_SHOOT);
+    }
+    previous_values[0] = val;
+
+    val = read_port_bit(3, 2);
+    if (val && !previous_values[1]) {
+        play_sound(SOUND_EXPLOSION);
+    }
+    previous_values[1] = val;
+
+    val = read_port_bit(3, 3);
+    if (val && !previous_values[2]) {
+        play_sound(SOUND_INVADER_KILLED);
+    }
+    previous_values[2] = val;
+
+    val = read_port_bit(5, 0);
+    if (val && !previous_values[3]) {
+        play_sound(SOUND_INVADER_1);
+    }
+    previous_values[3] = val;
+
+    val = read_port_bit(5, 1);
+    if (val && !previous_values[4]) {
+        play_sound(SOUND_INVADER_2);
+    }
+    previous_values[4] = val;
+
+    val = read_port_bit(5, 2);
+    if (val && !previous_values[5]) {
+        play_sound(SOUND_INVADER_3);
+    }
+    previous_values[5] = val;
+
+    val = read_port_bit(5, 3);
+    if (val && !previous_values[6]) {
+        play_sound(SOUND_INVADER_4);
+    }
+    previous_values[6] = val;
+
+    val = read_port_bit(3, 0);
+    if (val && !previous_values[7]) {
+        play_sound(SOUND_UFO_LOW);
+    }
+    previous_values[7] = val;
+
+    val = read_port_bit(5, 4);
+    if (val && !previous_values[8]) {
+        play_sound(SOUND_UFO_HIGH);
+    }
+    previous_values[8] = val;
 }
 
 void set_dip_switches() {
@@ -135,8 +195,13 @@ void handle_inputs() {
 
 int main(int argc, char *argv[]) {
 
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+        exit(1);
+    }
+
+    if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) < 0) {
+        printf("SDL Mixer could not initialize!\n");
         exit(1);
     }
 
@@ -152,6 +217,7 @@ int main(int argc, char *argv[]) {
     load_memory("invaders.rom");
     init_cpu(memory);
     init_display(memory);
+    init_audio();
     set_dip_switches();
 
     while (!quit) {
@@ -173,6 +239,7 @@ int main(int argc, char *argv[]) {
             instr = fetch_instr();
             cycle_count += exec_instr(instr);
             process_shift_register();
+            process_sound();
         }
 
         interrupt_flip_flop = !interrupt_flip_flop;
