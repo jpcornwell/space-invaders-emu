@@ -2,7 +2,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include <SDL2/SDL.h>
+#include "SDL.h"
+#include "SDL_mixer.h"
 
 #include "cpu.h"
 #include "display.h"
